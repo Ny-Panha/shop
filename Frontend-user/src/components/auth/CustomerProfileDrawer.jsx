@@ -427,32 +427,6 @@ export default function CustomerProfileDrawer() {
               gap: '10px',
             }}
           >
-            {/* Quick Admin Portal Link */}
-            <a
-              href="http://localhost:5174"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '10px 14px',
-                backgroundColor: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                color: '#0f172a',
-                textDecoration: 'none',
-                fontSize: '0.86rem',
-                fontWeight: 600,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Shield size={16} style={{ color: '#10b981' }} />
-                <span>Open POS Admin Portal (Port 5174)</span>
-              </div>
-              <ExternalLink size={14} style={{ color: '#64748b' }} />
-            </a>
-
             {/* Logout Button */}
             <button
               onClick={logout}

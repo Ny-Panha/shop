@@ -329,33 +329,6 @@ export function Navbar({ activeView, setActiveView, selectedBrand, setSelectedBr
               )}
             </div>
 
-            {/* Admin Portal Link */}
-            <button
-              onClick={() => setActiveView('admin')}
-              style={{
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                borderRadius: '999px',
-                color: '#cbd5e1',
-                padding: '6px 12px',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
-              className="hidden sm:inline-flex"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#00e599';
-                e.currentTarget.style.borderColor = 'rgba(0, 229, 153, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#cbd5e1';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-              }}
-            >
-              Admin
-            </button>
-
             {/* Zando Target URLs Inspector Button */}
             <button
               onClick={onOpenUrlsModal}

@@ -13,7 +13,6 @@ import { WishlistDrawer } from './components/WishlistDrawer';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderTrackingView } from './components/OrderTrackingView';
-import { AdminDashboard } from './components/AdminDashboard';
 import { HomePage } from './components/HomePage';
 import { ZandoUrlNavigatorModal } from './components/ZandoUrlNavigatorModal';
 import { ShopToolsModal } from './components/ShopToolsModal';
@@ -55,15 +54,13 @@ export function AppContent() {
 
   // Determine activeView from location for Header/Nav
   const pathParts = location.pathname.split('/').filter(Boolean);
-  const isHome = pathParts.length <= 1 && !['track', 'admin', 'product'].includes(pathParts[0]);
+  const isHome = pathParts.length <= 1 && !['track', 'product'].includes(pathParts[0]);
   const isShop = pathParts.length >= 2 && !['product'].includes(pathParts[0]);
-  const isAdmin = pathParts[0] === 'admin';
   const isTrack = pathParts[0] === 'track';
   const isProduct = pathParts[0] === 'product';
 
   let activeView = 'home';
-  if (isAdmin) activeView = 'admin';
-  else if (isTrack) activeView = 'track';
+  if (isTrack) activeView = 'track';
   else if (isShop) activeView = 'shop';
   else if (isProduct) activeView = 'shop';
 
@@ -129,7 +126,6 @@ export function AppContent() {
           if (view === 'home') navigate(`/${selectedGender}`);
           else if (view === 'shop') navigate(`/${selectedGender}/collection`);
           else if (view === 'track') navigate('/track');
-          else if (view === 'admin') navigate('/admin');
         }}
         selectedBrand={selectedBrand}
         setSelectedBrand={(b) => {
@@ -182,16 +178,6 @@ export function AppContent() {
             <OrderTrackingView
               initialOrderNumber={trackingOrderNumber}
               onBackToShop={() => navigate(`/${selectedGender}/collection`)}
-            />
-          } />
-
-          {/* Admin */}
-          <Route path="/admin" element={
-            <AdminDashboard
-              onBackToShop={() => {
-                navigate(`/${selectedGender}/collection`);
-                fetchCatalog();
-              }}
             />
           } />
 
@@ -298,7 +284,6 @@ export function AppContent() {
           if (view === 'home') navigate(`/${selectedGender}`);
           else if (view === 'shop') navigate(`/${selectedGender}/collection`);
           else if (view === 'track') navigate('/track');
-          else if (view === 'admin') navigate('/admin');
         }}
         onOpenCategories={() => navigate(`/${selectedGender}/clothes`)}
         onOpenBrands={() => navigate(`/${selectedGender}/routine`)}
