@@ -8,9 +8,9 @@ const STORAGE_KEY_ORDERS = 'zando_admin_orders_v1';
 
 const DEMO_USER = {
   id: 'CUST-8801',
-  name: 'Nha Panha',
+  name: 'Sokha Pich',
   phone: '012 889 900',
-  email: 'nha.panha@bbu.edu.kh',
+  email: 'sokha.pich@example.com',
   address: 'Street 102, Sangkat Svay Por, Battambang City',
   city: 'Battambang',
   points: 240,

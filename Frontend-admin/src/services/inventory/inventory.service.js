@@ -13,7 +13,7 @@ const DEFAULT_MOVEMENTS = [
     newStock: 25,
     reason: 'STOCK_IN (Factory Shipment)',
     date: '2026-03-04 10:20',
-    user: 'Nha (Admin)',
+    user: 'Admin Manager',
   },
   {
     id: 'MOV-1002',
@@ -60,7 +60,7 @@ export const inventoryService = {
     const newRecord = {
       id: `MOV-${Date.now()}`,
       date: new Date().toLocaleString(),
-      user: 'Nha (Admin)',
+      user: 'Admin Manager',
       ...movement,
     };
     const updated = [newRecord, ...history];

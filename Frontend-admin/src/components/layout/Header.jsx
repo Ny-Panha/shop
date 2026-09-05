@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Search, Plus, DollarSign, Bell, User } from 'lucide-react';
+import { Search, Plus, DollarSign, Bell, User, LogOut } from 'lucide-react';
+import { authService } from '../../services/authService';
 
 export default function Header({ onOpenAddProduct, exchangeRate = 4100 }) {
   const location = useLocation();
@@ -70,39 +71,72 @@ export default function Header({ onOpenAddProduct, exchangeRate = 4100 }) {
           <span>Add Product</span>
         </button>
 
-        {/* Admin Profile */}
+        {/* Admin Profile & Logout */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
+            gap: '12px',
             paddingLeft: '12px',
             borderLeft: '1px solid var(--border-subtle)',
           }}
         >
+          {/* Avatar */}
           <div
             style={{
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #27272a, #3f3f46)',
-              border: '1px solid var(--border-medium)',
+              background: 'linear-gradient(135deg, #10b981, #059669)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontWeight: 600,
+              fontWeight: 700,
               fontSize: '13px',
               color: '#fff',
             }}
           >
-            N
+            {(authService.getStoredUser()?.fullName || 'Admin')[0]?.toUpperCase()}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
-            <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#fff' }}>Nha</span>
-            <span style={{ fontSize: '10.5px', color: 'var(--accent-emerald)', textTransform: 'uppercase' }}>
-              Shop Owner
+            <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#fff' }}>
+              {authService.getStoredUser()?.fullName || 'Admin'}
+            </span>
+            <span style={{ fontSize: '10px', color: 'var(--accent-emerald)', textTransform: 'uppercase', fontWeight: 700 }}>
+              {authService.getStoredUser()?.role === 'ROLE_ADMIN' ? 'Admin Manager' : 'Shop Manager'}
             </span>
           </div>
+
+          {/* Sign Out Button */}
+          <button
+            type="button"
+            onClick={() => {
+              if (window.confirm('តើអ្នកពិតជាចង់ Sign Out ចេញពី POS Admin មែនទេ?')) {
+                authService.logout();
+                navigate('/login');
+              }
+            }}
+            title="Sign Out (ចាកចេញ)"
+            style={{
+              background: 'rgba(244, 63, 94, 0.08)',
+              border: '1px solid rgba(244, 63, 94, 0.25)',
+              borderRadius: '8px',
+              padding: '6px 8px',
+              color: 'var(--accent-rose)',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '11px',
+              fontWeight: 600,
+              marginLeft: '4px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <LogOut size={13} />
+            <span className="hidden sm:inline">Logout</span>
+          </button>
         </div>
       </div>
     </header>

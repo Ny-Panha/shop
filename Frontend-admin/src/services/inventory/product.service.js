@@ -25,7 +25,7 @@ export const productService = {
       newStock,
       reason,
       date: new Date().toLocaleString(),
-      user: 'Nha (Admin)',
+      user: 'Admin Manager',
     };
     localStorage.setItem('zando_stock_history_v1', JSON.stringify([record, ...history.slice(0, 99)]));
     return newStock;

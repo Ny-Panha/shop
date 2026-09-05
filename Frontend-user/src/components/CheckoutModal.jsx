@@ -627,7 +627,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderCompleted, onViewOrderTr
                 <input
                   type="email"
                   required
-                  placeholder="nha@example.com"
+                  placeholder="customer@example.com"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
                   className="input-field"

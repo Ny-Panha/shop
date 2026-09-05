@@ -84,11 +84,11 @@ const DEFAULT_PRODUCTS = [];
 const DEFAULT_CUSTOMERS = [
   {
     id: 'CUST-8801',
-    name: 'Nha Panha',
-    nameKm: 'ញ៉ា បញ្ញា',
+    name: 'Sophea Rath',
+    nameKm: 'សុភា រ័ត្ន',
     phone: '012 889 900',
-    email: 'nha.panha@bbu.edu.kh',
-    address: 'Street 102, Sangkat Svay Por, BBU Campus',
+    email: 'sophea.rath@gmail.com',
+    address: 'Street 102, Sangkat Svay Por',
     city: 'Battambang',
     tier: 'VIP Gold',
     points: 240,
@@ -169,7 +169,7 @@ const DEFAULT_ORDERS = [
   {
     id: 'ORD-8821',
     customerId: 'CUST-8801',
-    customer: 'Nha Panha',
+    customer: 'Sophea Rath',
     phone: '012 889 900',
     itemsCount: 2,
     totalUsd: 56.90,
