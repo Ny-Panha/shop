@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   FileText,
+  ArrowUpRight,
 } from 'lucide-react';
 import { adminStore } from '../data/adminStore';
 
@@ -30,6 +31,7 @@ export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedReceiptOrder, setSelectedReceiptOrder] = useState(null);
   const [selectedDetailOrder, setSelectedDetailOrder] = useState(null);
+  const [selectedStockMovementOrder, setSelectedStockMovementOrder] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
 
   const loadData = () => {
@@ -455,27 +457,68 @@ export default function OrdersPage() {
                     </select>
                   </td>
                   <td>
-                    {/* Warehouse Stock Deduction Indicator */}
+                    {/* Warehouse Stock Deduction Indicator - Clickable */}
                     {isRefunded ? (
-                      <span className="badge-delphi badge-zinc" title="Stock returned back to warehouse">
-                        <RotateCcw size={11} /> Restocked
-                      </span>
+                      <button
+                        onClick={() => setSelectedStockMovementOrder(ord)}
+                        className="badge-delphi badge-zinc"
+                        style={{
+                          cursor: 'pointer',
+                          border: '1px solid rgba(255, 255, 255, 0.18)',
+                          background: 'transparent',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          padding: '4px 9px',
+                          borderRadius: '6px',
+                        }}
+                        title="Click to view restocked details"
+                      >
+                        <RotateCcw size={11} />
+                        <span>Restocked</span>
+                        <ArrowUpRight size={10} style={{ opacity: 0.7 }} />
+                      </button>
                     ) : isStockCut ? (
-                      <span
+                      <button
+                        onClick={() => setSelectedStockMovementOrder(ord)}
                         className="badge-delphi badge-emerald"
-                        title="Stock automatically cut from warehouse inventory"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                        style={{
+                          cursor: 'pointer',
+                          border: '1px solid rgba(16, 185, 129, 0.35)',
+                          background: 'rgba(16, 185, 129, 0.12)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          padding: '4px 9px',
+                          borderRadius: '6px',
+                          transition: 'all 0.15s ease',
+                        }}
+                        title="Click to view warehouse stock movement & balance"
                       >
-                        <Package size={11} /> Stock Cut (កាត់ស្តុក)
-                      </span>
+                        <Package size={11} />
+                        <span style={{ fontWeight: 600 }}>Stock Cut (កាត់ស្តុក)</span>
+                        <ArrowUpRight size={11} style={{ opacity: 0.8 }} />
+                      </button>
                     ) : (
-                      <span
+                      <button
+                        onClick={() => setSelectedStockMovementOrder(ord)}
                         className="badge-delphi badge-amber"
+                        style={{
+                          cursor: 'pointer',
+                          border: '1px solid rgba(245, 158, 11, 0.35)',
+                          background: 'rgba(245, 158, 11, 0.12)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          padding: '4px 9px',
+                          borderRadius: '6px',
+                        }}
                         title="Awaiting completion to deduct warehouse stock"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                       >
-                        <Clock size={11} /> Pending Cut
-                      </span>
+                        <Clock size={11} />
+                        <span>Pending Cut</span>
+                        <ArrowUpRight size={10} style={{ opacity: 0.7 }} />
+                      </button>
                     )}
                   </td>
                   <td style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{ord.date}</td>
@@ -635,8 +678,9 @@ export default function OrdersPage() {
 
                 <button
                   onClick={() => {
+                    const ordId = selectedDetailOrder.id;
                     setSelectedDetailOrder(null);
-                    navigate('/inventory');
+                    navigate(`/inventory?tab=history&search=${ordId}`);
                   }}
                   className="btn-secondary"
                   style={{
@@ -923,6 +967,268 @@ export default function OrdersPage() {
               >
                 <Printer size={16} />
                 <span>Print Invoice</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Warehouse Stock Movement Ledger Modal */}
+      {selectedStockMovementOrder && (
+        <div className="modal-backdrop" onClick={() => setSelectedStockMovementOrder(null)}>
+          <div
+            className="modal-dialog"
+            style={{ maxWidth: '600px', background: 'var(--bg-card)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '8px',
+                    background: 'var(--accent-emerald-glow)',
+                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Package size={17} style={{ color: 'var(--accent-emerald)' }} />
+                </div>
+                <div>
+                  <h3 className="modal-title" style={{ fontSize: '15px' }}>
+                    Warehouse Stock Deduction — #{selectedStockMovementOrder.id}
+                  </h3>
+                  <div style={{ fontSize: '11.5px', color: 'var(--text-muted)' }}>
+                    Customer: {selectedStockMovementOrder.customer} • Date: {selectedStockMovementOrder.date}
+                  </div>
+                </div>
+              </div>
+              <button onClick={() => setSelectedStockMovementOrder(null)} className="btn-icon">
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="modal-body" style={{ padding: '20px' }}>
+              {/* Status Header Banner */}
+              <div
+                style={{
+                  background:
+                    selectedStockMovementOrder.stockDeducted ||
+                    selectedStockMovementOrder.status === 'Completed' ||
+                    selectedStockMovementOrder.status === 'Paid'
+                      ? 'rgba(16, 185, 129, 0.08)'
+                      : selectedStockMovementOrder.status === 'Refunded'
+                      ? 'rgba(244, 63, 94, 0.08)'
+                      : 'rgba(245, 158, 11, 0.08)',
+                  border: `1px solid ${
+                    selectedStockMovementOrder.stockDeducted ||
+                    selectedStockMovementOrder.status === 'Completed' ||
+                    selectedStockMovementOrder.status === 'Paid'
+                      ? 'rgba(16, 185, 129, 0.3)'
+                      : selectedStockMovementOrder.status === 'Refunded'
+                      ? 'rgba(244, 63, 94, 0.3)'
+                      : 'rgba(245, 158, 11, 0.3)'
+                  }`,
+                  borderRadius: 'var(--radius-md)',
+                  padding: '14px 16px',
+                  marginBottom: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                }}
+              >
+                {selectedStockMovementOrder.stockDeducted ||
+                selectedStockMovementOrder.status === 'Completed' ||
+                selectedStockMovementOrder.status === 'Paid' ? (
+                  <CheckCircle2 size={22} style={{ color: 'var(--accent-emerald)', flexShrink: 0 }} />
+                ) : selectedStockMovementOrder.status === 'Refunded' ? (
+                  <RotateCcw size={22} style={{ color: 'var(--accent-rose)', flexShrink: 0 }} />
+                ) : (
+                  <Clock size={22} style={{ color: 'var(--accent-amber)', flexShrink: 0 }} />
+                )}
+
+                <div>
+                  <div style={{ fontSize: '13.5px', fontWeight: 600, color: '#fff' }}>
+                    {selectedStockMovementOrder.stockDeducted ||
+                    selectedStockMovementOrder.status === 'Completed' ||
+                    selectedStockMovementOrder.status === 'Paid'
+                      ? '✅ Stock Deducted from Warehouse Ledger'
+                      : selectedStockMovementOrder.status === 'Refunded'
+                      ? '🔄 Order Refunded — Restocked to Warehouse'
+                      : '⏳ Pending Stock Cut'}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    {selectedStockMovementOrder.stockDeducted ||
+                    selectedStockMovementOrder.status === 'Completed' ||
+                    selectedStockMovementOrder.status === 'Paid'
+                      ? 'ចំនួនទំនិញក្នុងវិក្កយបត្រនេះត្រូវបានកាត់ចេញពីឃ្លាំងដោយស្វ័យប្រវត្តិ និងកត់ត្រាចូលក្នុងប្រវត្តិចលនាស្តុក (Stock Movements)។'
+                      : selectedStockMovementOrder.status === 'Refunded'
+                      ? 'ទំនិញត្រូវបានបូកចូលឃ្លាំងវិញដោយស្វ័យប្រវត្តិតាមរយៈ ORDER_REFUND។'
+                      : 'នៅពេល Status ត្រូវប្តូរទៅ Completed ទើបប្រព័ន្ធធ្វើការកាត់ស្តុកចេញពីឃ្លាំង។'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Deducted Items Table */}
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px' }}>
+                  ITEMS & WAREHOUSE QUANTITY CUT
+                </div>
+
+                <div
+                  style={{
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-md)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <table className="data-table" style={{ margin: 0 }}>
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Cut Qty</th>
+                        <th>Warehouse Balance</th>
+                        <th>Ledger Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedStockMovementOrder.items &&
+                        selectedStockMovementOrder.items.map((it, idx) => {
+                          const remainingStock = getProductStock(it);
+                          const qty = it.qty || it.quantity || 1;
+
+                          return (
+                            <tr key={idx}>
+                              <td>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                  <img
+                                    src={getItemImage(it)}
+                                    alt={it.name}
+                                    style={{
+                                      width: '38px',
+                                      height: '38px',
+                                      borderRadius: '6px',
+                                      objectFit: 'cover',
+                                      border: '1px solid var(--border-subtle)',
+                                      background: '#1a1a20',
+                                      flexShrink: 0,
+                                    }}
+                                    onError={(e) => {
+                                      e.target.src = '/zando-assets/insane-pant-main1.png';
+                                    }}
+                                  />
+                                  <div>
+                                    <div style={{ fontWeight: 600, color: '#fff', fontSize: '13px' }}>{it.name}</div>
+                                    <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                                      {it.sku || (it.id ? `SKU-${it.id}` : 'SKU-ITEM')}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <span
+                                  className="font-mono"
+                                  style={{
+                                    fontWeight: 700,
+                                    fontSize: '13px',
+                                    color:
+                                      selectedStockMovementOrder.status === 'Refunded'
+                                        ? 'var(--accent-emerald)'
+                                        : 'var(--accent-rose)',
+                                  }}
+                                >
+                                  {selectedStockMovementOrder.status === 'Refunded' ? `+${qty}` : `-${qty}`}
+                                </span>
+                              </td>
+                              <td>
+                                {remainingStock !== null ? (
+                                  <span className="font-mono" style={{ fontWeight: 600, color: 'var(--accent-emerald)' }}>
+                                    {remainingStock} units left
+                                  </span>
+                                ) : (
+                                  <span className="badge-delphi badge-emerald" style={{ fontSize: '10.5px' }}>
+                                    In Stock (Verified)
+                                  </span>
+                                )}
+                              </td>
+                              <td>
+                                <span
+                                  className={`badge-delphi ${
+                                    selectedStockMovementOrder.stockDeducted ||
+                                    selectedStockMovementOrder.status === 'Completed' ||
+                                    selectedStockMovementOrder.status === 'Paid'
+                                      ? 'badge-emerald'
+                                      : 'badge-amber'
+                                  }`}
+                                  style={{ fontSize: '10.5px' }}
+                                >
+                                  {selectedStockMovementOrder.stockDeducted ||
+                                  selectedStockMovementOrder.status === 'Completed' ||
+                                  selectedStockMovementOrder.status === 'Paid'
+                                    ? 'Cut in Ledger'
+                                    : 'Pending'}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Protection Callout */}
+              <div
+                style={{
+                  background: 'var(--bg-body)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '12px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  fontSize: '12px',
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                <div style={{ color: 'var(--accent-emerald)' }}>🔒</div>
+                <div>
+                  <strong>Stock Protection:</strong> Stock is auto-deducted only once upon completion. It cannot be duplicated or deducted multiple times.
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
+              <button
+                type="button"
+                onClick={() => setSelectedStockMovementOrder(null)}
+                className="btn-secondary"
+                style={{ padding: '6px 16px', fontSize: '12px' }}
+              >
+                Close
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const ordId = selectedStockMovementOrder.id;
+                  setSelectedStockMovementOrder(null);
+                  navigate(`/inventory?tab=history&search=${ordId}`);
+                }}
+                className="btn-primary"
+                style={{
+                  padding: '6px 18px',
+                  fontSize: '12px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span>View in Warehouse (មើលក្នុងឃ្លាំង)</span>
+                <ArrowRight size={13} />
               </button>
             </div>
           </div>

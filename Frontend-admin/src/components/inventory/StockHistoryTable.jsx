@@ -10,9 +10,15 @@ import {
   Layers,
 } from 'lucide-react';
 
-export default function StockHistoryTable({ movements = [] }) {
+export default function StockHistoryTable({ movements = [], initialSearch = '' }) {
   const [filterType, setFilterType] = useState('ALL'); // 'ALL' | 'SALES' | 'STOCK_IN' | 'ADJUST'
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+
+  React.useEffect(() => {
+    if (initialSearch) {
+      setSearchQuery(initialSearch);
+    }
+  }, [initialSearch]);
 
   const filtered = movements.filter((m) => {
     // Type filter

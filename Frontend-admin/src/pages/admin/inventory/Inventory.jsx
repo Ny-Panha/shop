@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Package,
   ArrowDownRight,
@@ -18,12 +19,23 @@ import StockAdjustModal from '../../../components/inventory/StockAdjustModal';
 import StockHistoryTable from '../../../components/inventory/StockHistoryTable';
 
 export default function Inventory() {
+  const [searchParams] = useSearchParams();
+  const urlTab = searchParams.get('tab');
+  const urlSearch = searchParams.get('search');
+
   const [products, setProducts] = useState([]);
   const [movements, setMovements] = useState([]);
   const [valuation, setValuation] = useState(null);
   const [settings, setSettings] = useState({ exchangeRate: 4100 });
-  const [activeTab, setActiveTab] = useState('catalog'); // 'catalog' | 'history' | 'alerts'
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState(urlTab || 'catalog'); // 'catalog' | 'history' | 'alerts'
+  const [searchQuery, setSearchQuery] = useState(urlSearch || '');
+
+  useEffect(() => {
+    const t = searchParams.get('tab');
+    const s = searchParams.get('search');
+    if (t) setActiveTab(t);
+    if (s) setSearchQuery(s);
+  }, [searchParams]);
 
   const [selectedProductForAdjust, setSelectedProductForAdjust] = useState(null);
 
@@ -304,7 +316,7 @@ export default function Inventory() {
       )}
 
       {/* Tab 2: Stock Movements History */}
-      {activeTab === 'history' && <StockHistoryTable movements={movements} />}
+      {activeTab === 'history' && <StockHistoryTable movements={movements} initialSearch={searchQuery} />}
 
       {/* Tab 3: Low Stock Warnings */}
       {activeTab === 'alerts' && (
