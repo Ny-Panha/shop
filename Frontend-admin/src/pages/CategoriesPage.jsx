@@ -675,24 +675,24 @@ export default function CategoriesPage() {
 
         <div className="bento-card">
           <div className="bento-header">
-            <span className="bento-title">Men Collections</span>
-            <Shirt size={16} className="bento-icon" style={{ color: 'var(--accent-sky)' }} />
+            <span className="bento-title">Active Categories</span>
+            <CheckCircle2 size={16} className="bento-icon" style={{ color: 'var(--accent-emerald)' }} />
           </div>
           <div className="bento-value font-mono">
-            {categories.filter((c) => c.gender === 'men' || c.gender === 'all').length}
+            {categories.filter((c) => c.active !== false).length}
           </div>
-          <div className="bento-desc">Men's fashion apparel & shoes</div>
+          <div className="bento-desc">Currently published & active</div>
         </div>
 
         <div className="bento-card">
           <div className="bento-header">
-            <span className="bento-title">Women Collections</span>
-            <Sparkles size={16} className="bento-icon" style={{ color: '#a855f7' }} />
+            <span className="bento-title">Total Brands</span>
+            <Sparkles size={16} className="bento-icon" style={{ color: 'var(--accent-amber)' }} />
           </div>
           <div className="bento-value font-mono">
-            {categories.filter((c) => c.gender === 'women' || c.gender === 'all').length}
+            {brands.length}
           </div>
-          <div className="bento-desc">Dresses, tops, skirts & footwear</div>
+          <div className="bento-desc">Store brands & collections</div>
         </div>
 
         <div className="bento-card">
