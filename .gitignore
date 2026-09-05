@@ -35,7 +35,7 @@ build
 *.tmp
 *.bak
 
-# Test screenshots & captured assets
-tests/*.png
-tests/*.jpg
-tests/*.webp
+# Non-production folders
+.agents/
+scripts/
+tests/
