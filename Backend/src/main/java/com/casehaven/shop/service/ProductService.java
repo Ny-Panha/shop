@@ -33,10 +33,18 @@ public class ProductService {
 
     public List<ProductDto> getProducts(Brand brand, Category category, BigDecimal minPrice,
                                         BigDecimal maxPrice, Boolean inStock, String query, String sort) {
-        List<Product> products = productRepository.filterProducts(
-                brand, category, minPrice, maxPrice, inStock,
-                (query != null && !query.isBlank()) ? query.trim() : null
-        );
+        boolean noFilters = (brand == null && category == null && minPrice == null && maxPrice == null
+                && (inStock == null || !inStock) && (query == null || query.isBlank()));
+
+        List<Product> products;
+        if (noFilters) {
+            products = productRepository.findAll();
+        } else {
+            products = productRepository.filterProducts(
+                    brand, category, minPrice, maxPrice, inStock,
+                    (query != null && !query.isBlank()) ? query.trim() : ""
+            );
+        }
 
         // Filter active only for storefront
         products = products.stream()

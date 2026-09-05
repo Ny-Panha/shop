@@ -7,7 +7,6 @@ import { motion } from 'motion/react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useLanguage } from '../context/LanguageContext';
-import { ZANDO_PRODUCTS } from '../data/zandoProducts';
 import { ProductCard } from './ProductCard';
 import { ZandoFooter } from './ZandoFooter';
 

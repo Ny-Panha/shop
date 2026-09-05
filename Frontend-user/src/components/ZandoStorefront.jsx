@@ -4,7 +4,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
-import { ZANDO_BANNERS, ZANDO_PRODUCTS } from '../data/zandoProducts';
+import { ZANDO_BANNERS } from '../data/zandoProducts';
 import { syncBridge } from '../services/syncBridge';
 import { ProductCard } from './ProductCard';
 
@@ -38,18 +38,12 @@ export function ZandoStorefront({ products: propsProducts = null, selectedGender
   const [seasonActiveDot, setSeasonActiveDot] = useState(0);
 
   // Clothing products for Season's Favorites (Dual Mode)
-  const seasonFavoriteIds = isWomen ? [201, 204, 205, 217] : [101, 102, 103, 104];
-  const seasonFavoriteProducts = seasonFavoriteIds
-    .map(id => catalog.find(p => p.id === id))
-    .filter(Boolean);
-
-  const otherClothes = catalog.filter(p => {
+  const allSeasonClothes = catalog.filter(p => {
     const pCat = (p.category || '').toUpperCase();
     const isCloth = pCat === 'CLOTHES' || pCat === 'T-SHIRTS' || pCat === 'SHIRTS' || pCat === 'JEANS' || pCat === 'PANTS' || pCat === 'TOPS_WOMEN' || pCat === 'DRESSES';
     const matchGender = !p.gender || p.gender === 'all' || p.gender === targetGender;
-    return isCloth && matchGender && !seasonFavoriteIds.includes(p.id);
+    return isCloth && matchGender;
   });
-  const allSeasonClothes = [...seasonFavoriteProducts, ...otherClothes];
 
   // Season Poster Image
   const seasonPosterImg = isWomen ? '/zando-assets/women/poster-women-season.png' : '/zando-assets/season-poster.png';
@@ -72,18 +66,12 @@ export function ZandoStorefront({ products: propsProducts = null, selectedGender
   };
 
   // Footwear / New Brands highlights (Dual Mode)
-  const shoeIds = isWomen ? [251, 252, 253, 254, 255] : [111, 112, 113, 114, 115];
-  const featuredShoes = shoeIds
-    .map(id => catalog.find(p => p.id === id))
-    .filter(Boolean);
-
-  const otherShoes = catalog.filter(p => {
+  const allShoes = catalog.filter(p => {
     const pCat = (p.category || '').toUpperCase();
     const isFootwearOrBag = pCat === 'SHOES' || pCat === 'RUNNING' || pCat === 'BAGS' || pCat === 'SHOES_WOMEN' || pCat === 'BAGS_WOMEN';
     const matchGender = !p.gender || p.gender === 'all' || p.gender === targetGender;
-    return isFootwearOrBag && matchGender && !shoeIds.includes(p.id);
+    return isFootwearOrBag && matchGender;
   });
-  const allShoes = [...featuredShoes, ...otherShoes];
 
   // Smooth slide controllers for Shoes
   const checkShoesScroll = () => {

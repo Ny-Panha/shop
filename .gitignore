@@ -40,6 +40,8 @@ scripts/
 *.swp
 
 # T
+target/
+*/target/
 tests/
 Thumbs.db
 *.tmp

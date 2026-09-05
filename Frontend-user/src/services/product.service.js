@@ -1,5 +1,4 @@
-import { ZANDO_PRODUCTS, findProductByZandoRoute } from '../data/zandoProducts';
-import { FALLBACK_PRODUCTS } from '../data/mockProducts';
+import { findProductByZandoRoute } from '../data/zandoProducts';
 import { getProducts as fetchApiProducts } from '../api/client';
 import { syncBridge } from './syncBridge';
 

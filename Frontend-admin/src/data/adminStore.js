@@ -45,40 +45,40 @@ function notifyChange(type, key, data) {
 // Initial Categories aligned with Storefront CATEGORY_CONFIG & full ZANDO Catalog
 export const DEFAULT_CATEGORIES = [
   // General Collections (All)
-  { id: 'ALL', nameEn: 'All Products', nameKm: 'ទំនិញទាំងអស់', gender: 'all', count: 57, icon: 'ShoppingBag', active: true },
-  { id: 'NEW_IN', nameEn: 'New Arrivals', nameKm: 'ទំនិញថ្មីៗ (New In)', gender: 'all', count: 16, icon: 'Sparkles', active: true },
-  { id: 'SALE', nameEn: 'Special Deals & Sale', nameKm: 'បញ្ចុះតម្លៃពិសេស (Sale)', gender: 'all', count: 14, icon: 'Flame', active: true },
+  { id: 'ALL', nameEn: 'All Products', nameKm: 'ទំនិញទាំងអស់', gender: 'all', count: 0, icon: 'ShoppingBag', active: true },
+  { id: 'NEW_IN', nameEn: 'New Arrivals', nameKm: 'ទំនិញថ្មីៗ (New In)', gender: 'all', count: 0, icon: 'Sparkles', active: true },
+  { id: 'SALE', nameEn: 'Special Deals & Sale', nameKm: 'បញ្ចុះតម្លៃពិសេស (Sale)', gender: 'all', count: 0, icon: 'Flame', active: true },
 
   // Men's Fashion Collections
-  { id: 'T-Shirts', nameEn: 'T-Shirt & Polo', nameKm: 'អាវយឺតដៃខ្លី & Tees', gender: 'men', count: 9, icon: 'Shirt', active: true },
-  { id: 'POLO', nameEn: 'Polo Shirts', nameKm: 'អាវប៉ូឡូ (Polo Shirts)', gender: 'men', count: 5, icon: 'Shirt', active: true },
-  { id: 'SHIRTS', nameEn: 'Casual & Dress Shirts', nameKm: 'អាវសាច់ក្រណាត់ (Shirts)', gender: 'men', count: 4, icon: 'Shirt', active: true },
-  { id: 'TANKS', nameEn: 'Tanks & Sleeveless', nameKm: 'អាវវាលក្លៀក (Tank Tops)', gender: 'men', count: 3, icon: 'Shirt', active: true },
-  { id: 'JACKETS', nameEn: 'Jackets & Outerwear', nameKm: 'អាវក្រៅ & អាវរងា (Jackets)', gender: 'all', count: 6, icon: 'Layers', active: true },
-  { id: 'CLOTHES', nameEn: 'Clothing & Suits', nameKm: 'សម្លៀកបំពាក់បុរស', gender: 'men', count: 12, icon: 'Shirt', active: true },
-  { id: 'Jeans', nameEn: 'Jeans & Denim', nameKm: 'ខោខូវប៊យ Jeans បុរស', gender: 'men', count: 7, icon: 'Scissors', active: true },
-  { id: 'PANTS', nameEn: 'Trousers & Chinos', nameKm: 'ខោជើងវែង & ក្រណាត់', gender: 'men', count: 5, icon: 'Scissors', active: true },
-  { id: 'SHORTS', nameEn: 'Casual & Denim Shorts', nameKm: 'ខោខ្លីបុរស (Shorts)', gender: 'men', count: 4, icon: 'Scissors', active: true },
-  { id: 'SHOES', nameEn: 'Footwear & Sneakers', nameKm: 'ស្បែកជើងប៉ាតា & Sneakers', gender: 'men', count: 15, icon: 'Footprints', active: true },
-  { id: 'RUNNING', nameEn: 'Running & Athletic Shoes', nameKm: 'ស្បែកជើងរត់ & កីឡា', gender: 'all', count: 8, icon: 'Footprints', active: true },
-  { id: 'BAGS', nameEn: 'Bags & Accessories', nameKm: 'កាបូប & Accessories បុរស', gender: 'men', count: 8, icon: 'ShoppingBag', active: true },
-  { id: 'BACKPACKS', nameEn: 'Backpacks & Travel Bags', nameKm: 'កាតាបស្ពាយខ្នង (Backpacks)', gender: 'all', count: 5, icon: 'Package', active: true },
-  { id: 'WATCHES', nameEn: 'Watches & Jewelry', nameKm: 'នាឡិកា & គ្រឿងតុបតែង', gender: 'all', count: 4, icon: 'Watch', active: true },
+  { id: 'T-Shirts', nameEn: 'T-Shirt & Polo', nameKm: 'អាវយឺតដៃខ្លី & Tees', gender: 'men', count: 0, icon: 'Shirt', active: true },
+  { id: 'POLO', nameEn: 'Polo Shirts', nameKm: 'អាវប៉ូឡូ (Polo Shirts)', gender: 'men', count: 0, icon: 'Shirt', active: true },
+  { id: 'SHIRTS', nameEn: 'Casual & Dress Shirts', nameKm: 'អាវសាច់ក្រណាត់ (Shirts)', gender: 'men', count: 0, icon: 'Shirt', active: true },
+  { id: 'TANKS', nameEn: 'Tanks & Sleeveless', nameKm: 'អាវវាលក្លៀក (Tank Tops)', gender: 'men', count: 0, icon: 'Shirt', active: true },
+  { id: 'JACKETS', nameEn: 'Jackets & Outerwear', nameKm: 'អាវក្រៅ & អាវរងា (Jackets)', gender: 'all', count: 0, icon: 'Layers', active: true },
+  { id: 'CLOTHES', nameEn: 'Clothing & Suits', nameKm: 'សម្លៀកបំពាក់បុរស', gender: 'men', count: 0, icon: 'Shirt', active: true },
+  { id: 'Jeans', nameEn: 'Jeans & Denim', nameKm: 'ខោខូវប៊យ Jeans បុរស', gender: 'men', count: 0, icon: 'Scissors', active: true },
+  { id: 'PANTS', nameEn: 'Trousers & Chinos', nameKm: 'ខោជើងវែង & ក្រណាត់', gender: 'men', count: 0, icon: 'Scissors', active: true },
+  { id: 'SHORTS', nameEn: 'Casual & Denim Shorts', nameKm: 'ខោខ្លីបុរស (Shorts)', gender: 'men', count: 0, icon: 'Scissors', active: true },
+  { id: 'SHOES', nameEn: 'Footwear & Sneakers', nameKm: 'ស្បែកជើងប៉ាតា & Sneakers', gender: 'men', count: 0, icon: 'Footprints', active: true },
+  { id: 'RUNNING', nameEn: 'Running & Athletic Shoes', nameKm: 'ស្បែកជើងរត់ & កីឡា', gender: 'all', count: 0, icon: 'Footprints', active: true },
+  { id: 'BAGS', nameEn: 'Bags & Accessories', nameKm: 'កាបូប & Accessories បុរស', gender: 'men', count: 0, icon: 'ShoppingBag', active: true },
+  { id: 'BACKPACKS', nameEn: 'Backpacks & Travel Bags', nameKm: 'កាតាបស្ពាយខ្នង (Backpacks)', gender: 'all', count: 0, icon: 'Package', active: true },
+  { id: 'WATCHES', nameEn: 'Watches & Jewelry', nameKm: 'នាឡិកា & គ្រឿងតុបតែង', gender: 'all', count: 0, icon: 'Watch', active: true },
 
   // Women's Fashion Collections
-  { id: 'TOPS_WOMEN', nameEn: 'Tops & Blouses', nameKm: 'អាវយឺត & Blouses នារី', gender: 'women', count: 12, icon: 'Shirt', active: true },
-  { id: 'DRESSES', nameEn: 'Dresses & Skirts', nameKm: 'រ៉ូប & Dresses នារី', gender: 'women', count: 6, icon: 'Sparkles', active: true },
-  { id: 'SKIRTS', nameEn: 'Midi & Karo Skirts', nameKm: 'សំពត់ & Skirts នារី', gender: 'women', count: 4, icon: 'Sparkles', active: true },
-  { id: 'JEANS_WOMEN', nameEn: 'Women Jeans & Bottoms', nameKm: 'ខោ Jeans នារី & Bottoms', gender: 'women', count: 5, icon: 'Scissors', active: true },
-  { id: 'SHOES_WOMEN', nameEn: 'Shoes & High Heels', nameKm: 'ស្បែកជើងនារី & កែង', gender: 'women', count: 8, icon: 'Footprints', active: true },
-  { id: 'BAGS_WOMEN', nameEn: 'Handbags & Purses', nameKm: 'កាបូបដៃនារី & Purses', gender: 'women', count: 4, icon: 'ShoppingBag', active: true },
+  { id: 'TOPS_WOMEN', nameEn: 'Tops & Blouses', nameKm: 'អាវយឺត & Blouses នារី', gender: 'women', count: 0, icon: 'Shirt', active: true },
+  { id: 'DRESSES', nameEn: 'Dresses & Skirts', nameKm: 'រ៉ូប & Dresses នារី', gender: 'women', count: 0, icon: 'Sparkles', active: true },
+  { id: 'SKIRTS', nameEn: 'Midi & Karo Skirts', nameKm: 'សំពត់ & Skirts នារី', gender: 'women', count: 0, icon: 'Sparkles', active: true },
+  { id: 'JEANS_WOMEN', nameEn: 'Women Jeans & Bottoms', nameKm: 'ខោ Jeans នារី & Bottoms', gender: 'women', count: 0, icon: 'Scissors', active: true },
+  { id: 'SHOES_WOMEN', nameEn: 'Shoes & High Heels', nameKm: 'ស្បែកជើងនារី & កែង', gender: 'women', count: 0, icon: 'Footprints', active: true },
+  { id: 'BAGS_WOMEN', nameEn: 'Handbags & Purses', nameKm: 'កាបូបដៃនារី & Purses', gender: 'women', count: 0, icon: 'ShoppingBag', active: true },
 
   // Kids Collections
-  { id: 'KIDS', nameEn: 'Kids & Youth Fashion', nameKm: 'សម្លៀកបំពាក់កុមារ (Kids)', gender: 'kids', count: 5, icon: 'Tag', active: true },
+  { id: 'KIDS', nameEn: 'Kids & Youth Fashion', nameKm: 'សម្លៀកបំពាក់កុមារ (Kids)', gender: 'kids', count: 0, icon: 'Tag', active: true },
 ];
 
-// Initial Seed Products from full Zando Catalog
-const DEFAULT_PRODUCTS = ZANDO_SEED_PRODUCTS;
+// Initial Seed Products from full Zando Catalog (Real Data Mode - Empty)
+const DEFAULT_PRODUCTS = [];
 
 // Initial Seed Customers
 const DEFAULT_CUSTOMERS = [
@@ -252,13 +252,9 @@ export const adminStore = {
       if (stored !== null) {
         return JSON.parse(stored);
       }
-      const mode = localStorage.getItem(STORAGE_KEYS.DATA_MODE);
-      if (mode === 'real') {
-        localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify([]));
-        return [];
-      }
-      localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-      return DEFAULT_PRODUCTS;
+      localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify([]));
+      localStorage.setItem(STORAGE_KEYS.DATA_MODE, 'real');
+      return [];
     } catch {
       return [];
     }
@@ -272,24 +268,20 @@ export const adminStore = {
   },
 
   restoreDemoCatalog: () => {
-    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-    localStorage.setItem(STORAGE_KEYS.DATA_MODE, 'demo');
-    notifyChange('RESTORE_DEMO', STORAGE_KEYS.PRODUCTS, DEFAULT_PRODUCTS);
-    return DEFAULT_PRODUCTS;
+    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify([]));
+    localStorage.setItem(STORAGE_KEYS.DATA_MODE, 'real');
+    notifyChange('RESTORE_DEMO', STORAGE_KEYS.PRODUCTS, []);
+    return [];
   },
 
   isRealDataMode: () => {
-    try {
-      return localStorage.getItem(STORAGE_KEYS.DATA_MODE) === 'real';
-    } catch {
-      return false;
-    }
+    return true;
   },
 
-  setRealDataMode: (isReal = true) => {
+  setRealDataMode: () => {
     try {
-      localStorage.setItem(STORAGE_KEYS.DATA_MODE, isReal ? 'real' : 'demo');
-      notifyChange('DATA_MODE_CHANGE', STORAGE_KEYS.DATA_MODE, isReal ? 'real' : 'demo');
+      localStorage.setItem(STORAGE_KEYS.DATA_MODE, 'real');
+      notifyChange('DATA_MODE_CHANGE', STORAGE_KEYS.DATA_MODE, 'real');
     } catch (_) {}
   },
 
@@ -407,30 +399,38 @@ export const adminStore = {
 
   getCategories: () => {
     try {
+      const prods = adminStore.getProducts();
+      let list = DEFAULT_CATEGORIES;
       const stored = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
-      if (!stored) {
-        localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(DEFAULT_CATEGORIES));
-        return DEFAULT_CATEGORIES;
-      }
-      const parsed = JSON.parse(stored);
-      if (!Array.isArray(parsed) || parsed.length === 0) {
-        localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(DEFAULT_CATEGORIES));
-        return DEFAULT_CATEGORIES;
-      }
-
-      // Auto-merge: if user has an old cache with fewer categories, merge new defaults without losing custom categories
-      let changed = false;
-      const existingIds = new Set(parsed.map((c) => (c.id || '').toUpperCase()));
-      for (const defCat of DEFAULT_CATEGORIES) {
-        if (!existingIds.has(defCat.id.toUpperCase())) {
-          parsed.push(defCat);
-          changed = true;
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          list = parsed;
         }
       }
-      if (changed) {
-        localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(parsed));
+
+      // Auto-merge new defaults if needed
+      const existingIds = new Set(list.map((c) => (c.id || '').toUpperCase()));
+      for (const defCat of DEFAULT_CATEGORIES) {
+        if (!existingIds.has(defCat.id.toUpperCase())) {
+          list.push(defCat);
+        }
       }
-      return parsed;
+
+      // Dynamically calculate accurate counts based on current real products
+      return list.map((cat) => {
+        let cnt = 0;
+        if (cat.id === 'ALL') {
+          cnt = prods.length;
+        } else if (cat.id === 'NEW_IN') {
+          cnt = prods.filter(p => (p.badge && p.badge.toUpperCase().includes('NEW')) || p.isNewArrival).length;
+        } else if (cat.id === 'SALE') {
+          cnt = prods.filter(p => (p.discountPercent && p.discountPercent > 0) || (p.badge && p.badge.includes('%'))).length;
+        } else {
+          cnt = prods.filter(p => (p.category || '').toUpperCase() === cat.id.toUpperCase() || (p.subCategory || '').toUpperCase() === cat.id.toUpperCase()).length;
+        }
+        return { ...cat, count: cnt };
+      });
     } catch {
       return DEFAULT_CATEGORIES;
     }

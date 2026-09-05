@@ -5,22 +5,24 @@ import {
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import JsBarcode from 'jsbarcode';
-import { ZANDO_PRODUCTS } from '../data/zandoProducts';
+import { syncBridge } from '../services/syncBridge';
 import { useLanguage } from '../context/LanguageContext';
 
 export function ShopToolsModal({ isOpen, onClose }) {
   const { lang } = useLanguage();
   const [activeTab, setActiveTab] = useState('barcode'); // 'barcode' | 'compressor' | 'converter'
 
+  const products = syncBridge.getProducts();
+
   // -------------------------------------------------------------
   // TAB 1: BARCODE & LABEL MAKER STATE
   // -------------------------------------------------------------
-  const [selectedProductId, setSelectedProductId] = useState(100);
-  const [customBrand, setCustomBrand] = useState('TEN-ELEVEN');
-  const [customName, setCustomName] = useState('INSANE® ROYAL PANTS');
-  const [customSku, setCustomSku] = useState('10112606136');
-  const [customPrice, setCustomPrice] = useState('38.95');
-  const [customSize, setCustomSize] = useState('30');
+  const [selectedProductId, setSelectedProductId] = useState('');
+  const [customBrand, setCustomBrand] = useState('Store Brand');
+  const [customName, setCustomName] = useState('Product Name');
+  const [customSku, setCustomSku] = useState('SKU-1001');
+  const [customPrice, setCustomPrice] = useState('10.00');
+  const [customSize, setCustomSize] = useState('M');
   const [labelFormat, setLabelFormat] = useState('50x30'); // '50x30', '40x30', 'grid'
   const [printQuantity, setPrintQuantity] = useState(6);
   const [copiedSku, setCopiedSku] = useState(false);
@@ -30,9 +32,9 @@ export function ShopToolsModal({ isOpen, onClose }) {
   // Sync with selected product
   const handleSelectProduct = (prodId) => {
     setSelectedProductId(prodId);
-    const p = ZANDO_PRODUCTS.find(item => item.id === Number(prodId));
+    const p = products.find(item => String(item.id) === String(prodId));
     if (p) {
-      setCustomBrand(p.brand || 'ZANDO');
+      setCustomBrand(p.brand || 'Store Brand');
       setCustomName(p.nameEn || p.name);
       setCustomSku(p.zandoCode || p.sku || `SKU-${p.id}`);
       setCustomPrice(Number(p.price || 0).toFixed(2));
@@ -307,11 +309,15 @@ export function ShopToolsModal({ isOpen, onClose }) {
                         backgroundColor: '#ffffff'
                       }}
                     >
-                      {ZANDO_PRODUCTS.map(p => (
-                        <option key={p.id} value={p.id}>
-                          {p.brand} - {p.nameEn || p.name} (${Number(p.price).toFixed(2)})
-                        </option>
-                      ))}
+                      {products.length === 0 ? (
+                        <option value="">-- No Products (Add in POS) --</option>
+                      ) : (
+                        products.map(p => (
+                          <option key={p.id} value={p.id}>
+                            {p.brand || 'Product'} - {p.nameEn || p.name} (${Number(p.price || 0).toFixed(2)})
+                          </option>
+                        ))
+                      )}
                     </select>
                   </div>
 

@@ -2,7 +2,6 @@
  * Zando Cross-Origin Sync Bridge Client (Storefront <-> POS Admin)
  * Synchronizes orders, customer accounts, and real-time inventory between 5173 and 5174
  */
-import { ZANDO_PRODUCTS } from '../data/zandoProducts';
 
 const ADMIN_ORIGIN = 'http://localhost:5174';
 const STORAGE_KEY_PRODUCTS = 'zando_admin_products_v1';
@@ -173,10 +172,8 @@ export const syncBridge = {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) return parsed;
       }
-      const mode = localStorage.getItem(STORAGE_KEY_DATA_MODE);
-      if (mode === 'real') return [];
     } catch (_) {}
-    return ZANDO_PRODUCTS;
+    return [];
   },
 
   getBrands: () => {

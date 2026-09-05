@@ -18,8 +18,7 @@ import { HomePage } from './components/HomePage';
 import { ZandoUrlNavigatorModal } from './components/ZandoUrlNavigatorModal';
 import { ShopToolsModal } from './components/ShopToolsModal';
 import { getProducts } from './api/client';
-import { FALLBACK_PRODUCTS } from './data/mockProducts';
-import { findProductByZandoRoute, ZANDO_PRODUCTS } from './data/zandoProducts';
+import { findProductByZandoRoute } from './data/zandoProducts';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { useCart } from './context/CartContext';
 

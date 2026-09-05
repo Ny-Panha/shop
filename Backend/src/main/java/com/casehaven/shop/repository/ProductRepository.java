@@ -29,10 +29,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
            "(:maxPrice IS NULL OR p.price <= :maxPrice) AND " +
            "(:inStock IS NULL OR :inStock = false OR p.stock > 0) AND " +
-           "(:query IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-           " LOWER(p.model) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-           " LOWER(p.shortDescription) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-           " LOWER(p.sku) LIKE LOWER(CONCAT('%', :query, '%')))")
+           "(:query IS NULL OR :query = '' OR " +
+           " LOWER(p.name) LIKE CONCAT('%', LOWER(CAST(:query AS String)), '%') OR " +
+           " LOWER(p.model) LIKE CONCAT('%', LOWER(CAST(:query AS String)), '%') OR " +
+           " LOWER(p.shortDescription) LIKE CONCAT('%', LOWER(CAST(:query AS String)), '%') OR " +
+           " LOWER(p.sku) LIKE CONCAT('%', LOWER(CAST(:query AS String)), '%'))")
     List<Product> filterProducts(
             @Param("brand") Brand brand,
             @Param("category") Category category,

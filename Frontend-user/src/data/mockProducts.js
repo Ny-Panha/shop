@@ -1,3 +1,2 @@
-import { ZANDO_PRODUCTS } from './zandoProducts';
-
-export const FALLBACK_PRODUCTS = [...ZANDO_PRODUCTS];
+// Real Data Mode - No fake fallback products
+export const FALLBACK_PRODUCTS = [];

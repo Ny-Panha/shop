@@ -9,7 +9,7 @@ import {
   getProducts, createProduct, updateProduct, deleteProduct, adjustProductStock,
   getAllOrders, updateOrderStatus, getAdminStats, getStockLogs, login, getCurrentUser, getAuthToken
 } from '../api/client';
-import { FALLBACK_PRODUCTS } from '../data/mockProducts';
+import { syncBridge } from '../services/syncBridge';
 import { useLanguage } from '../context/LanguageContext';
 import { ShopToolsModal } from './ShopToolsModal';
 
@@ -128,7 +128,8 @@ export function AdminDashboard({ onBackToShop }) {
       });
       setOrders(allOrders);
 
-      setProducts((pData.status === 'fulfilled' && pData.value && pData.value.length > 0) ? pData.value : FALLBACK_PRODUCTS);
+      const currentProds = syncBridge.getProducts();
+      setProducts((pData.status === 'fulfilled' && pData.value && pData.value.length > 0) ? pData.value : currentProds);
       setStockLogs((lData.status === 'fulfilled' && lData.value) ? lData.value : []);
 
       if (sData.status === 'fulfilled' && sData.value) {
@@ -141,8 +142,8 @@ export function AdminDashboard({ onBackToShop }) {
           totalOrders: allOrders.length,
           paidOrders: allOrders.filter(o => o.paymentStatus === 'PAID').length,
           pendingOrders: allOrders.filter(o => o.paymentStatus === 'PENDING').length,
-          lowStockProducts: 2,
-          totalProducts: FALLBACK_PRODUCTS.length
+          lowStockProducts: currentProds.filter(p => p.stock <= 5).length,
+          totalProducts: currentProds.length
         });
       }
       setLoading(false);

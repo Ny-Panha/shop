@@ -157,39 +157,26 @@ export default function ProductsPage() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* Data Mode Indicator & Reset Actions */}
+          {/* Data Mode Indicator */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span
-              className={`badge-delphi ${isRealMode || products.length === 0 ? 'badge-emerald' : 'badge-zinc'}`}
+              className="badge-delphi badge-emerald"
               style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '5px' }}
             >
               <Sparkles size={13} />
-              {isRealMode || products.length === 0 ? 'Real Data Mode' : 'Demo Catalog'}
+              Real Data Mode
             </span>
 
-            {products.length > 0 && !isRealMode && (
+            {products.length > 0 && (
               <button
                 type="button"
                 onClick={handleClearMockData}
                 className="btn-secondary"
                 style={{ color: 'var(--accent-rose)', border: '1px solid rgba(244, 63, 94, 0.3)', padding: '7px 12px', fontSize: '12px' }}
-                title="លុប Mock Data 57 ទំនិញចោល ដើម្បីប្រើ Real Data"
+                title="លុបទំនិញទាំងអស់ចោល"
               >
                 <Trash2 size={14} />
-                <span>Clear Mock Data</span>
-              </button>
-            )}
-
-            {(isRealMode || products.length === 0) && (
-              <button
-                type="button"
-                onClick={handleRestoreDemoData}
-                className="btn-secondary"
-                style={{ padding: '7px 12px', fontSize: '12px', color: 'var(--text-muted)' }}
-                title="ទាញយក Demo Data មកវិញ"
-              >
-                <RotateCcw size={13} />
-                <span>Restore Demo</span>
+                <span>Clear All Products</span>
               </button>
             )}
           </div>
@@ -403,14 +390,6 @@ export default function ProductsPage() {
             >
               <Plus size={16} />
               <span>Add First Product (បន្ថែមទំនិញដំបូង)</span>
-            </button>
-            <button
-              onClick={handleRestoreDemoData}
-              className="btn-secondary"
-              style={{ padding: '10px 18px' }}
-            >
-              <RotateCcw size={15} />
-              <span>Restore Demo Catalog</span>
             </button>
           </div>
         </div>
