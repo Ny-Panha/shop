@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
   Layers,
@@ -420,6 +420,81 @@ export default function CategoriesPage() {
     )
   );
 
+  // Dynamic department tabs based on categories that actually exist in the store ("តាមមាន Category")
+  const departmentTabs = useMemo(() => {
+    const tabs = [{ id: 'all', label: `All (${categories.length})` }];
+
+    // Count categories per department
+    const counts = {};
+    for (const c of categories) {
+      const g = (c.gender || 'all').toLowerCase().trim();
+      counts[g] = (counts[g] || 0) + 1;
+    }
+
+    const formatLabel = (key, count) => {
+      switch (key) {
+        case 'men':
+          return `Men (${count})`;
+        case 'women':
+          return `Women (${count})`;
+        case 'kids':
+          return `Kids (${count})`;
+        case 'all':
+          return `Unisex / General (${count})`;
+        case 'accessories':
+          return `Accessories (${count})`;
+        case 'shoes':
+          return `Shoes (${count})`;
+        case 'sports':
+          return `Sports (${count})`;
+        case 'bags':
+          return `Bags (${count})`;
+        default:
+          return `${key.charAt(0).toUpperCase() + key.slice(1)} (${count})`;
+      }
+    };
+
+    // Standard ordering for common departments
+    const priority = ['men', 'women', 'kids'];
+    const otherKeys = Object.keys(counts).filter(
+      (k) => !priority.includes(k) && k !== 'all'
+    );
+
+    // Only add tabs that ACTUALLY exist (count > 0)
+    for (const key of priority) {
+      if (counts[key] && counts[key] > 0) {
+        tabs.push({ id: key, label: formatLabel(key, counts[key]) });
+      }
+    }
+
+    // Add any custom departments that exist
+    for (const key of otherKeys) {
+      if (counts[key] && counts[key] > 0) {
+        tabs.push({ id: key, label: formatLabel(key, counts[key]) });
+      }
+    }
+
+    // If there are general/unisex categories AND there are also specific departments, add Unisex tab
+    const hasSpecificDepts = Object.keys(counts).some(
+      (k) => k !== 'all' && counts[k] > 0
+    );
+    if (counts['all'] && counts['all'] > 0 && hasSpecificDepts) {
+      tabs.push({ id: 'all_gender', label: formatLabel('all', counts['all']) });
+    }
+
+    return tabs;
+  }, [categories]);
+
+  // Safety: If selected tab no longer exists after deleting categories, reset to 'all'
+  useEffect(() => {
+    if (selectedGender !== 'all') {
+      const exists = departmentTabs.some((t) => t.id === selectedGender);
+      if (!exists) {
+        setSelectedGender('all');
+      }
+    }
+  }, [departmentTabs, selectedGender]);
+
   const getDepartmentBadgeClass = (gender) => {
     const g = (gender || '').toLowerCase();
     if (g === 'men') return 'badge-zinc';
@@ -440,12 +515,14 @@ export default function CategoriesPage() {
       (c.nameEn && c.nameEn.toLowerCase().includes(q)) ||
       (c.nameKm && c.nameKm.toLowerCase().includes(q));
 
-    // Gender / Department filter
+    // Gender / Department filter - strictly match the department selected
     let matchesGender = true;
     if (selectedGender !== 'all') {
-      matchesGender =
-        (c.gender || '').toLowerCase() === selectedGender.toLowerCase() ||
-        c.gender === 'all';
+      if (selectedGender === 'all_gender') {
+        matchesGender = (c.gender || '').toLowerCase().trim() === 'all';
+      } else {
+        matchesGender = (c.gender || '').toLowerCase().trim() === selectedGender.toLowerCase().trim();
+      }
     }
 
     // Status filter
@@ -691,18 +768,9 @@ export default function CategoriesPage() {
             )}
           </div>
 
-          {/* Department Filter Pills */}
+          {/* Department Filter Pills (Dynamic: only shows existing categories) */}
           <div className="pill-filter-bar" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-            {[
-              { id: 'all', label: `All (${categories.length})` },
-              { id: 'men', label: `Men (${categories.filter((c) => (c.gender || '').toLowerCase() === 'men' || c.gender === 'all').length})` },
-              { id: 'women', label: `Women (${categories.filter((c) => (c.gender || '').toLowerCase() === 'women' || c.gender === 'all').length})` },
-              { id: 'kids', label: `Kids (${categories.filter((c) => (c.gender || '').toLowerCase() === 'kids' || c.gender === 'all').length})` },
-              ...customDepartments.map((dept) => ({
-                id: dept,
-                label: `${dept.charAt(0).toUpperCase() + dept.slice(1)} (${categories.filter((c) => (c.gender || '').toLowerCase() === dept || c.gender === 'all').length})`,
-              })),
-            ].map((tab) => (
+            {departmentTabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setSelectedGender(tab.id)}
