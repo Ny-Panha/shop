@@ -1,41 +1,53 @@
-# Dependencies
-node_modules/
-*/node_modules/
+# Sorted A-Z
 
-# Production build outputs
-dist/
+# A
+.agents/
+
+# B
+*.bak
+build
 build/
-*/dist/
 */build/
 
-# Environment & local secret files
+# D
+dist/
+*/dist/
+.DS_Store
+
+# E
 .env
 .env.local
 .env.*.local
 *.env
 
-# Logs
+# I
+.idea/
+
+# L
 logs/
 *.log
+
+# N
+node_modules/
+*/node_modules/
 npm-debug.log*
-yarn-debug.log*
+
+# P
 pnpm-debug.log*
 
-# Editor & OS files
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Temporary, dump & scratch files
-tree.txt
-build
-*.tmp
-*.bak
-
-# Non-production folders
-.agents/
+# S
 scripts/
+*.swo
+*.swp
+
+# T
 tests/
+Thumbs.db
+*.tmp
+tree.txt
+
+# V
+.vscode/
+
+# Y
+yarn-debug.log*
