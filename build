@@ -1,0 +1,1104 @@
+# PHONE CASE E-COMMERCE — NEXT BUILD PHASE
+
+## IMPORTANT: READ THE EXISTING PROJECT FIRST
+
+Before changing any code:
+
+1. Inspect the entire existing repository structure.
+2. Inspect `README.md`, root `package.json`, `Frontend/package.json`, backend configuration, routing, services, models, and existing documentation.
+3. The current repository already contains a React/Vite frontend and a Node/Express backend with inventory, products, stock movements, payments, sales, users, etc.
+4. DO NOT delete, rename, or break existing POS functionality unless it is explicitly required for the new e-commerce application.
+5. The requested e-commerce application is a new customer-facing system and should be architected cleanly so it can coexist with existing functionality.
+6. Do not blindly convert the existing Node/Express backend into Spring Boot. First determine the safest architecture and migration boundary.
+7. If the existing backend functionality can be reused safely, document what is reused. If Spring Boot is required for the e-commerce backend, create a clearly separated Spring Boot backend module.
+
+Existing relevant areas include:
+
+* `Backend/controller/inventory`
+* `Backend/controller/payment`
+* `Backend/models/inventory`
+* `Backend/models/payment`
+* `Backend/routes/inventory`
+* `Backend/routes/payment`
+* `Backend/helper/stock.helper.js`
+* `Frontend/src/pages/admin/product`
+* `Frontend/src/pages/admin/inventory`
+* `Frontend/src/services/inventory`
+* `Frontend/src/components/product`
+
+Use the repository tree as architectural context, not as permission to replace the existing application.
+
+---
+
+# OBJECTIVE
+
+Build a complete production-oriented phone-case e-commerce website with:
+
+* React + Vite frontend
+* Spring Boot backend
+* REST API
+* Database persistence
+* Bakong KHQR payment integration
+* Customer storefront
+* Product catalog
+* Product detail pages
+* Cart
+* Multi-step checkout
+* Customer authentication
+* Order history
+* Order tracking
+* Admin dashboard
+* Product management
+* Stock management
+* Stock movement history
+* Payment status management
+* Responsive UI
+
+The application must feel like a real Cambodian phone-accessories store, not a generic generated demo.
+
+---
+
+# BRAND / UI DIRECTION
+
+Create an ORIGINAL brand.
+
+Do NOT copy:
+
+* Shopify logo
+* Shopify branding
+* Shopify assets
+* Shopify exact visual design
+* Existing e-commerce website assets
+
+Shopify may only be used as a structural reference for common e-commerce concepts such as:
+
+* product grid
+* cart
+* checkout
+* order management
+
+Create a completely original visual identity.
+
+Design direction:
+
+* premium modern tech-accessories store
+* clean editorial layout
+* strong product photography
+* sophisticated typography
+* subtle borders
+* soft shadows
+* restrained animations
+* excellent whitespace
+* mobile-first responsive behavior
+
+Avoid:
+
+* generic bootstrap-looking UI
+* excessive gradients
+* excessive glassmorphism
+* giant rounded cards everywhere
+* lorem ipsum
+* fake statistics
+* broken placeholder UI
+* excessive animation
+
+Use a coherent design system with reusable:
+
+* colors
+* typography
+* spacing
+* radius
+* shadows
+* buttons
+* inputs
+* cards
+* badges
+* modals
+* tables
+* empty states
+* loading states
+* error states
+
+---
+
+# PRODUCT CATALOG
+
+Support:
+
+## Phone brands
+
+* Apple iPhone
+* Samsung Galaxy
+* Xiaomi
+
+## Case categories
+
+* Silicone
+* Clear / Transparent
+* Leather
+* Wallet
+* MagSafe
+
+Products must contain:
+
+* id
+* SKU
+* name
+* slug
+* brand
+* phone model
+* case type
+* price
+* compare-at-price if applicable
+* stock quantity
+* low-stock threshold
+* short description
+* full description
+* product images
+* specifications
+* features
+* compatibility
+* active/inactive status
+* createdAt
+* updatedAt
+
+Use realistic products.
+
+Examples:
+
+* MatteShield MagSafe Case — iPhone 15 Pro
+* ClearGuard Ultra Case — iPhone 16
+* Urban Leather Wallet Case — iPhone 15 Pro Max
+* FlexSilicone Case — Samsung Galaxy S24
+* Armor MagSafe Case — Samsung Galaxy S24 Ultra
+* Crystal Clear Case — Xiaomi 14
+
+Use realistic Cambodian pricing in KHR.
+
+Do not use fake lorem ipsum content.
+
+Seed enough products to make the storefront feel complete.
+
+---
+
+# CUSTOMER STOREFRONT
+
+Create:
+
+## Home
+
+Sections:
+
+1. Header
+2. Hero
+3. Featured categories
+4. Best sellers
+5. New arrivals
+6. Shop by phone
+7. Promotional section
+8. Trust/service benefits
+9. Footer
+
+Header:
+
+* logo
+* navigation
+* search
+* account
+* cart
+* mobile menu
+
+Navigation:
+
+* Home
+* Shop
+* iPhone
+* Samsung
+* Xiaomi
+* Categories
+* Track Order
+
+---
+
+# PRODUCT LISTING
+
+Route:
+
+`/shop`
+
+Features:
+
+* responsive product grid
+* search
+* pagination
+* sorting
+* filters
+* price range
+* phone brand
+* phone model
+* case type
+* stock availability
+
+Filter state should be reflected in URL query parameters where appropriate.
+
+Example:
+
+`/shop?brand=Apple&model=iPhone%2015%20Pro&type=MagSafe`
+
+Product card:
+
+* image
+* name
+* phone compatibility
+* case type
+* price
+* stock state
+* quick add
+* view product
+
+Stock states:
+
+* In Stock
+* Low Stock
+* Out of Stock
+
+Do not allow customers to purchase more than available stock.
+
+---
+
+# PRODUCT DETAIL
+
+Route:
+
+`/product/:slug`
+
+Include:
+
+* image gallery
+* product name
+* price
+* stock status
+* compatibility
+* case type
+* description
+* features
+* specifications
+* quantity selector
+* Add to Cart
+* Buy Now
+* related products
+
+Handle:
+
+* invalid product
+* out-of-stock
+* loading
+* API error
+
+---
+
+# CART
+
+Route:
+
+`/cart`
+
+Features:
+
+* product image
+* product name
+* selected quantity
+* unit price
+* subtotal
+* remove
+* increase/decrease quantity
+* stock validation
+
+Summary:
+
+* subtotal
+* delivery fee
+* total
+
+Persist cart appropriately.
+
+Never trust frontend prices or quantities during checkout.
+
+The backend must recalculate:
+
+* product prices
+* quantities
+* subtotal
+* delivery fee
+* final total
+
+---
+
+# CHECKOUT
+
+Use a multi-step checkout.
+
+## Step 1 — Customer information
+
+Fields:
+
+* full name
+* phone
+* email
+
+## Step 2 — Delivery address
+
+Cambodian address structure:
+
+* province
+* district
+* commune
+* village
+* detailed address
+
+## Step 3 — Order review
+
+Show:
+
+* products
+* quantities
+* prices
+* subtotal
+* delivery fee
+* total
+
+## Step 4 — Payment
+
+Payment method:
+
+### Bakong KHQR
+
+Display:
+
+* KHQR
+* amount
+* order reference
+* payment instructions
+* payment status
+* countdown/status polling if supported
+
+Never expose private payment credentials in React.
+
+---
+
+# BAKONG KHQR
+
+Implement the Bakong payment integration through the Spring Boot backend.
+
+Architecture:
+
+React
+→ Spring Boot API
+→ Bakong integration service
+→ Bakong system
+
+The frontend must NEVER contain:
+
+* Bakong private credentials
+* API secrets
+* signing secrets
+* server-only configuration
+
+Use environment variables on the backend.
+
+Create a dedicated payment module.
+
+Example conceptual structure:
+
+`payment/`
+
+* controller
+* service
+* dto
+* entity
+* repository
+* exception
+* config
+
+Support payment lifecycle:
+
+`PENDING`
+
+→ `QR_GENERATED`
+
+→ `WAITING_PAYMENT`
+
+→ `PAID`
+
+or
+
+`FAILED`
+
+or
+
+`EXPIRED`
+
+Do not mark an order as paid merely because the QR was displayed.
+
+Payment confirmation must be validated server-side.
+
+Implement idempotent payment handling.
+
+Prevent:
+
+* duplicate payment processing
+* duplicate order completion
+* payment amount mismatch
+* payment for another order
+* expired payment reuse
+
+If live Bakong credentials/API access are unavailable in the development environment:
+
+Implement a clean provider abstraction and development/mock payment provider.
+
+DO NOT fake a production Bakong confirmation.
+
+Clearly isolate mock mode from production mode.
+
+---
+
+# ORDER SYSTEM
+
+Order fields should include:
+
+* id
+* orderNumber
+* customer
+* items
+* subtotal
+* deliveryFee
+* total
+* paymentStatus
+* orderStatus
+* shippingAddress
+* paymentReference
+* createdAt
+* updatedAt
+
+Order status:
+
+`PENDING_PAYMENT`
+
+`CONFIRMED`
+
+`PROCESSING`
+
+`PACKED`
+
+`SHIPPED`
+
+`DELIVERED`
+
+`CANCELLED`
+
+Payment status:
+
+`PENDING`
+
+`PAID`
+
+`FAILED`
+
+`EXPIRED`
+
+`REFUNDED`
+
+Do not allow invalid state transitions.
+
+---
+
+# CUSTOMER ACCOUNT
+
+Routes:
+
+* `/login`
+* `/register`
+* `/account`
+* `/account/orders`
+* `/account/orders/:id`
+
+Customer can:
+
+* register
+* login
+* logout
+* view profile
+* view order history
+* view order details
+* track order
+* view payment status
+
+Order detail should show a visual tracking timeline.
+
+---
+
+# ADMIN DASHBOARD
+
+Create a dedicated admin area.
+
+Routes:
+
+* `/admin`
+* `/admin/products`
+* `/admin/products/new`
+* `/admin/products/:id/edit`
+* `/admin/inventory`
+* `/admin/orders`
+* `/admin/orders/:id`
+* `/admin/customers`
+
+Dashboard metrics:
+
+* total orders
+* pending orders
+* paid orders
+* revenue
+* products
+* low-stock products
+
+Do not invent fake statistics.
+
+Use actual API data.
+
+---
+
+# ADMIN PRODUCT MANAGEMENT
+
+Admin can:
+
+* create product
+* edit product
+* deactivate product
+* delete product where safe
+* upload/manage images
+* change price
+* change stock
+* change category
+* change compatibility
+* update descriptions
+* set low-stock threshold
+
+Use validation.
+
+Prevent accidental destructive actions with confirmation dialogs.
+
+---
+
+# INVENTORY
+
+Create proper stock movement logic.
+
+Stock operations:
+
+* STOCK_IN
+* STOCK_OUT
+* SALE
+* ADJUSTMENT
+* RETURN
+
+Each movement should record:
+
+* product
+* quantity
+* type
+* reason
+* previousStock
+* resultingStock
+* reference
+* createdBy
+* createdAt
+
+Stock must never silently become negative.
+
+Order checkout must use transactional stock reservation/decrement logic.
+
+Handle concurrent purchases safely.
+
+---
+
+# SPRING BOOT BACKEND
+
+Create a clean package architecture.
+
+Example:
+
+`backend-spring/`
+
+```text
+src/main/java/com/phonecase/store/
+├── config/
+├── security/
+├── auth/
+│   ├── controller/
+│   ├── dto/
+│   ├── entity/
+│   ├── repository/
+│   └── service/
+├── product/
+│   ├── controller/
+│   ├── dto/
+│   ├── entity/
+│   ├── repository/
+│   └── service/
+├── inventory/
+├── cart/
+├── order/
+├── payment/
+│   ├── controller/
+│   ├── dto/
+│   ├── service/
+│   ├── provider/
+│   └── config/
+├── customer/
+├── common/
+└── exception/
+```
+
+Use:
+
+* Spring Boot
+* Spring Web
+* Spring Data JPA
+* Spring Security
+* Bean Validation
+* database migrations
+* DTOs
+* service layer
+* repository layer
+* centralized exception handling
+
+Do not expose JPA entities directly from controllers.
+
+Use request/response DTOs.
+
+Use transactions where required.
+
+---
+
+# API DESIGN
+
+Create REST APIs such as:
+
+## Products
+
+`GET /api/products`
+
+`GET /api/products/{id}`
+
+`GET /api/products/slug/{slug}`
+
+`POST /api/admin/products`
+
+`PUT /api/admin/products/{id}`
+
+`DELETE /api/admin/products/{id}`
+
+## Inventory
+
+`GET /api/admin/inventory`
+
+`POST /api/admin/inventory/stock-in`
+
+`POST /api/admin/inventory/stock-out`
+
+`GET /api/admin/inventory/movements`
+
+## Orders
+
+`POST /api/orders`
+
+`GET /api/orders/my`
+
+`GET /api/orders/{id}`
+
+`PATCH /api/admin/orders/{id}/status`
+
+## Payment
+
+`POST /api/payments/khqr/create`
+
+`GET /api/payments/{paymentId}/status`
+
+Use appropriate endpoint names and DTOs if the final architecture requires different naming.
+
+---
+
+# DATABASE
+
+Use a relational database appropriate for Spring Boot/JPA.
+
+Design normalized entities for:
+
+* User
+* Product
+* ProductImage
+* Category
+* Cart
+* CartItem
+* Order
+* OrderItem
+* Address
+* Payment
+* StockMovement
+
+Use relationships carefully.
+
+Add:
+
+* primary keys
+* foreign keys
+* indexes
+* unique constraints
+* timestamps
+
+OrderItem must preserve the purchase price at the time of order.
+
+Do not calculate historical order prices from the current Product price.
+
+---
+
+# SECURITY
+
+Implement:
+
+* authentication
+* authorization
+* customer/admin roles
+* password hashing
+* protected admin endpoints
+* input validation
+* CORS configuration
+* secure error responses
+
+Never expose:
+
+* passwords
+* secrets
+* payment credentials
+* stack traces
+* internal database details
+
+Admin APIs must be protected server-side.
+
+Do not rely on React route guards for security.
+
+---
+
+# FRONTEND ARCHITECTURE
+
+Use React + Vite + JSX.
+
+Prefer feature-based organization:
+
+```text
+Frontend/
+└── src/
+    ├── app/
+    ├── assets/
+    ├── components/
+    │   ├── ui/
+    │   ├── layout/
+    │   └── common/
+    ├── features/
+    │   ├── auth/
+    │   ├── products/
+    │   ├── cart/
+    │   ├── checkout/
+    │   ├── orders/
+    │   ├── payment/
+    │   └── admin/
+    ├── pages/
+    │   ├── storefront/
+    │   ├── account/
+    │   └── admin/
+    ├── services/
+    ├── hooks/
+    ├── context/
+    ├── utils/
+    ├── routes/
+    ├── App.jsx
+    └── main.jsx
+```
+
+Do not create unnecessary abstraction.
+
+Reusable components should be genuinely reusable.
+
+---
+
+# RESPONSIVE DESIGN
+
+Test these layouts:
+
+* 375px mobile
+* 390px mobile
+* 768px tablet
+* 1024px tablet/laptop
+* 1440px desktop
+
+Mobile:
+
+* compact header
+* mobile navigation
+* 2-column product grid where appropriate
+* sticky cart/checkout actions where useful
+* touch-friendly controls
+
+Desktop:
+
+* full navigation
+* sidebar filters
+* 3–4 column product grid
+* spacious product detail layout
+
+Admin dashboard must also be responsive.
+
+---
+
+# UX STATES
+
+Every API-driven page must handle:
+
+* loading
+* empty
+* success
+* error
+* retry
+
+Example:
+
+No products:
+
+"មិនមានផលិតផលត្រូវនឹងលក្ខខណ្ឌស្វែងរក"
+
+or equivalent English depending on the application's selected language.
+
+Do not display broken blank screens.
+
+---
+
+# LANGUAGE
+
+Prepare the application for:
+
+* English
+* Khmer
+
+Use the existing project's localization approach where it is safe to reuse it.
+
+Do not hardcode every UI string directly into components.
+
+---
+
+# IMAGE HANDLING
+
+Use real-looking phone case product imagery.
+
+Do not use:
+
+* broken image URLs
+* random unrelated stock images
+* obvious placeholder images in the final seeded catalog
+
+If product images cannot be provided, create a clear local placeholder system that looks intentional and does not appear broken.
+
+---
+
+# TESTING
+
+Create tests for important backend behavior:
+
+* product retrieval
+* product filtering
+* authentication
+* order creation
+* stock validation
+* stock decrement
+* invalid stock operation
+* payment amount validation
+* payment state transitions
+* authorization
+
+Frontend test important components and flows where the current project setup supports it.
+
+---
+
+# ERROR HANDLING
+
+Backend:
+
+Use a centralized exception handler.
+
+Return structured errors such as:
+
+```json
+{
+  "success": false,
+  "message": "Product is out of stock",
+  "code": "PRODUCT_OUT_OF_STOCK"
+}
+```
+
+Frontend should convert API errors into usable UI messages.
+
+---
+
+# ENVIRONMENT CONFIGURATION
+
+Create:
+
+`.env.example`
+
+Document variables such as:
+
+* database URL
+* database username
+* database password
+* JWT secret
+* frontend URL
+* Bakong configuration
+* payment mode
+
+Never commit actual secrets.
+
+Never hardcode production credentials.
+
+---
+
+# DOCUMENTATION
+
+Create/update documentation for:
+
+* architecture
+* setup
+* environment variables
+* database
+* API
+* Bakong integration
+* development payment mode
+* production payment mode
+* deployment
+* testing
+
+---
+
+# IMPLEMENTATION STRATEGY
+
+Do NOT attempt to generate the entire system blindly in one massive change.
+
+Work in controlled phases.
+
+## PHASE 1
+
+Analyze existing repository.
+
+Produce:
+
+* architecture decision
+* migration/coexistence strategy
+* target folder structure
+* dependency plan
+* database design
+* API plan
+
+Then implement the base Spring Boot backend.
+
+## PHASE 2
+
+Implement:
+
+* Product
+* Category
+* Inventory
+* Seed data
+* Product APIs
+
+## PHASE 3
+
+Implement React storefront:
+
+* layout
+* home
+* shop
+* filters
+* product detail
+* responsive UI
+
+## PHASE 4
+
+Implement:
+
+* cart
+* authentication
+* checkout
+* order creation
+
+## PHASE 5
+
+Implement:
+
+* Bakong KHQR provider
+* payment lifecycle
+* payment verification
+* development mock provider
+
+## PHASE 6
+
+Implement:
+
+* customer order history
+* tracking
+* account pages
+
+## PHASE 7
+
+Implement:
+
+* admin dashboard
+* product management
+* inventory
+* order management
+
+## PHASE 8
+
+Testing and hardening:
+
+* API tests
+* validation
+* authorization
+* stock concurrency
+* payment edge cases
+* responsive testing
+* build verification
+
+---
+
+# CRITICAL EXECUTION RULE
+
+After each phase:
+
+1. Run the application.
+2. Run the relevant tests.
+3. Check compilation/build.
+4. Inspect changed files.
+5. Fix errors before moving to the next phase.
+6. Do not leave known build errors.
+7. Do not mark functionality complete when it is only mocked.
+8. Clearly label development-only mock behavior.
+9. Preserve unrelated existing POS functionality.
+
+When modifying the repository, show a concise summary of:
+
+* files created
+* files modified
+* files intentionally preserved
+* dependencies added
+* tests executed
+* remaining blockers
+
+Start with PHASE 1 and inspect the existing repository before writing implementation code.

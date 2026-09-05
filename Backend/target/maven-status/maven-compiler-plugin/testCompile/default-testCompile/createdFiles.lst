@@ -1,0 +1,4 @@
+com/casehaven/shop/payment/BakongKhqrServiceTest.class
+com/casehaven/shop/service/OrderValidationTest.class
+com/casehaven/shop/payment/PaymentLifecycleTest.class
+com/casehaven/shop/inventory/InventoryConcurrencyTest.class

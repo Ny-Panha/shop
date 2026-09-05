@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zando Sync Bridge</title>
+</head>
+<body style="display:none;">
+<script>
+/**
+ * Zando Real-Time Cross-Origin Data Bridge
+ * Connects Customer Storefront (localhost:5173) with Admin POS (localhost:5174)
+ */
+const STORAGE_KEYS = {
+  PRODUCTS: 'zando_admin_products_v1',
+  CATEGORIES: 'zando_admin_categories_v1',
+  ORDERS: 'zando_admin_orders_v1',
+  CUSTOMERS: 'zando_admin_customers_v1',
+  SETTINGS: 'zando_admin_settings_v1',
+};
+
+const broadcastChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('zando_store_sync') : null;
+
+function getStoreData(key, fallback = []) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function setStoreData(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+    if (broadcastChannel) {
+      broadcastChannel.postMessage({ type: 'STORAGE_CHANGE', key, data });
+    }
+  } catch (e) {
+    console.error('Bridge storage write error:', e);
+  }
+}
+
+function getFullSnapshot() {
+  return {
+    products: getStoreData(STORAGE_KEYS.PRODUCTS),
+    orders: getStoreData(STORAGE_KEYS.ORDERS),
+    customers: getStoreData(STORAGE_KEYS.CUSTOMERS),
+    categories: getStoreData(STORAGE_KEYS.CATEGORIES),
+  };
+}
+
+// Listen to local storage changes on Admin origin (5174) and forward to parent (5173)
+window.addEventListener('storage', (e) => {
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({
+      type: 'ZANDO_REMOTE_SYNC_UPDATE',
+      key: e.key,
+      newValue: e.newValue ? JSON.parse(e.newValue) : null,
+      snapshot: getFullSnapshot()
+    }, '*');
+  }
+});
+
+if (broadcastChannel) {
+  broadcastChannel.onmessage = (msg) => {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'ZANDO_REMOTE_SYNC_UPDATE',
+        source: 'broadcast',
+        payload: msg.data,
+        snapshot: getFullSnapshot()
+      }, '*');
+    }
+  };
+}
+
+// Handle requests from parent Storefront (5173)
+window.addEventListener('message', (event) => {
+  const data = event.data;
+  if (!data || typeof data !== 'object') return;
+
+  switch (data.type) {
+    case 'ZANDO_PING':
+      event.source.postMessage({
+        type: 'ZANDO_PONG',
+        ready: true,
+        snapshot: getFullSnapshot()
+      }, '*');
+      break;
+
+    case 'ZANDO_REQUEST_SNAPSHOT':
+      event.source.postMessage({
+        type: 'ZANDO_SNAPSHOT_RESPONSE',
+        snapshot: getFullSnapshot()
+      }, '*');
+      break;
+
+    case 'ZANDO_RECORD_ORDER': {
+      const { order, customer } = data;
+      if (order) {
+        const orders = getStoreData(STORAGE_KEYS.ORDERS, []);
+        const updatedOrders = [order, ...orders.filter(o => o.id !== order.id)];
+        setStoreData(STORAGE_KEYS.ORDERS, updatedOrders);
+
+        // Deduct product stock if items provided
+        if (Array.isArray(order.items)) {
+          const products = getStoreData(STORAGE_KEYS.PRODUCTS, []);
+          let changed = false;
+          const updatedProducts = products.map(p => {
+            const item = order.items.find(i => i.id === p.id || i.name === p.name || i.name === p.nameEn);
+            if (item) {
+              changed = true;
+              return { ...p, stock: Math.max(0, (p.stock || 0) - (item.qty || item.quantity || 1)) };
+            }
+            return p;
+          });
+          if (changed) {
+            setStoreData(STORAGE_KEYS.PRODUCTS, updatedProducts);
+          }
+        }
+      }
+
+      if (customer) {
+        const customers = getStoreData(STORAGE_KEYS.CUSTOMERS, []);
+        const existingIdx = customers.findIndex(c => c.phone === customer.phone || (customer.email && c.email === customer.email));
+        let updatedCustomers;
+        if (existingIdx >= 0) {
+          const prev = customers[existingIdx];
+          const updatedCust = {
+            ...prev,
+            ...customer,
+            totalOrders: (prev.totalOrders || 0) + 1,
+            totalSpent: Number(((prev.totalSpent || 0) + (Number(order?.totalUsd) || 0)).toFixed(2)),
+            points: (prev.points || 0) + Math.round(Number(order?.totalUsd || 10)),
+          };
+          updatedCustomers = [...customers];
+          updatedCustomers[existingIdx] = updatedCust;
+        } else {
+          const newCust = {
+            id: customer.id || 'CUST-' + Math.floor(1000 + Math.random() * 9000),
+            name: customer.name || customer.customerName || 'Store Customer',
+            phone: customer.phone || '012 345 678',
+            email: customer.email || '',
+            address: customer.address || 'Cambodia',
+            city: customer.city || 'Phnom Penh',
+            tier: 'Standard Member',
+            points: Math.round(Number(order?.totalUsd || 10)),
+            totalOrders: 1,
+            totalSpent: Number(order?.totalUsd || 0),
+            joinedDate: new Date().toISOString().split('T')[0],
+            status: 'Active',
+            avatar: customer.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
+          };
+          updatedCustomers = [newCust, ...customers];
+        }
+        setStoreData(STORAGE_KEYS.CUSTOMERS, updatedCustomers);
+      }
+
+      event.source.postMessage({
+        type: 'ZANDO_ORDER_ACK',
+        success: true,
+        orderId: order?.id,
+        snapshot: getFullSnapshot()
+      }, '*');
+      break;
+    }
+
+    case 'ZANDO_UPDATE_CUSTOMER': {
+      const { customer } = data;
+      if (customer && customer.phone) {
+        const customers = getStoreData(STORAGE_KEYS.CUSTOMERS, []);
+        const idx = customers.findIndex(c => c.phone === customer.phone || (customer.email && c.email === customer.email));
+        let updatedCustomers;
+        if (idx >= 0) {
+          updatedCustomers = [...customers];
+          updatedCustomers[idx] = { ...updatedCustomers[idx], ...customer };
+        } else {
+          updatedCustomers = [customer, ...customers];
+        }
+        setStoreData(STORAGE_KEYS.CUSTOMERS, updatedCustomers);
+      }
+      break;
+    }
+  }
+});
+
+// Notify parent on initial load
+if (window.parent && window.parent !== window) {
+  window.parent.postMessage({
+    type: 'ZANDO_BRIDGE_MOUNTED',
+    origin: window.location.origin,
+    snapshot: getFullSnapshot()
+  }, '*');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "casehaven-ecommerce",
+  "version": "1.0.0",
+  "description": "CaseHaven Enterprise Phone Case E-Commerce Platform with Bakong KHQR",
+  "scripts": {
+    "dev": "./dev.sh",
+    "backend": "cd Backend && ~/.local/bin/mvn spring-boot:run",
+    "frontend": "cd Frontend && npm run dev",
+    "admin": "cd Frontend-admin && npm run dev",
+    "test": "cd Backend && ~/.local/bin/mvn test && node tests/phase8_e2e_suite.js",
+    "build": "cd Backend && ~/.local/bin/mvn clean package -DskipTests && cd ../Frontend && npm run build && cd ../Frontend-admin && npm run build",
+    "stop": "fuser -k 8080/tcp 2>/dev/null; fuser -k 5173/tcp 2>/dev/null; fuser -k 5174/tcp 2>/dev/null"
+  },
+  "keywords": [
+    "ecommerce",
+    "phone-cases",
+    "react",
+    "vite",
+    "spring-boot",
+    "bakong",
+    "khqr"
+  ],
+  "author": "Nha",
+  "license": "MIT"
+}
