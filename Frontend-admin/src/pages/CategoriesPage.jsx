@@ -28,27 +28,83 @@ import {
   Watch,
   Crown,
   Folder,
+  Smartphone,
+  Shield,
+  Zap,
+  Headphones,
+  Cable,
+  Laptop,
+  Tablet,
+  Camera,
+  Speaker,
 } from 'lucide-react';
 import { adminStore } from '../data/adminStore';
 
 const AVAILABLE_ICONS = [
-  { id: 'Shirt', label: 'Tops & Shirts', Icon: Shirt },
-  { id: 'Scissors', label: 'Jeans & Bottoms', Icon: Scissors },
-  { id: 'Footprints', label: 'Footwear & Shoes', Icon: Footprints },
-  { id: 'ShoppingBag', label: 'Bags & Accessories', Icon: ShoppingBag },
-  { id: 'Sparkles', label: 'New Arrivals', Icon: Sparkles },
-  { id: 'Flame', label: 'Sale & Deals', Icon: Flame },
-  { id: 'Layers', label: 'Jackets & Coats', Icon: Layers },
-  { id: 'Package', label: 'Packs & Travel', Icon: Package },
-  { id: 'Watch', label: 'Watches & Jewelry', Icon: Watch },
-  { id: 'Tag', label: 'Tag & Kids', Icon: Tag },
-  { id: 'Crown', label: 'Premium & Brand', Icon: Crown },
-  { id: 'Folder', label: 'General Catalog', Icon: Folder },
+  // Phone Cases & Tech Accessories (CaseHaven / Electronics)
+  { id: 'Smartphone', label: 'Phone & Cases (ស្រោមទូរស័ព្ទ)', Icon: Smartphone },
+  { id: 'Shield', label: 'Screen & Armor (កញ្ចក់ការពារ)', Icon: Shield },
+  { id: 'Zap', label: 'Charger & Power (ឆ្នាំងសាក)', Icon: Zap },
+  { id: 'Headphones', label: 'Headphones (កាស)', Icon: Headphones },
+  { id: 'Cable', label: 'Cables & USB (ខ្សែ & ឌុយ)', Icon: Cable },
+  { id: 'Watch', label: 'Smartwatch (នាឡិកា)', Icon: Watch },
+  { id: 'Speaker', label: 'Speaker & Sound (បាស)', Icon: Speaker },
+  { id: 'Laptop', label: 'Laptop & Mac (កុំព្យូទ័រ)', Icon: Laptop },
+  { id: 'Tablet', label: 'Tablet & iPad (ថេប្លេត)', Icon: Tablet },
+  { id: 'Camera', label: 'Camera & Lens (កាមេរ៉ា)', Icon: Camera },
+
+  // General Retail & Promotions
+  { id: 'ShoppingBag', label: 'Bags & Retail (កាបូប & ទំនិញ)', Icon: ShoppingBag },
+  { id: 'Sparkles', label: 'New Arrivals (ទំនិញថ្មីៗ)', Icon: Sparkles },
+  { id: 'Flame', label: 'Sale & Deals (ប្រូម៉ូសិន)', Icon: Flame },
+  { id: 'Package', label: 'Box & Package (ប្រអប់/កញ្ចប់)', Icon: Package },
+  { id: 'Tag', label: 'Tag & Special (ស្លាកតម្លៃ)', Icon: Tag },
+  { id: 'Crown', label: 'Premium & Brand (ម៉ាកល្បី)', Icon: Crown },
+  { id: 'Folder', label: 'General Catalog (ទូទៅ)', Icon: Folder },
+
+  // Apparel & Fashion
+  { id: 'Shirt', label: 'Tops & Shirts (អាវ)', Icon: Shirt },
+  { id: 'Scissors', label: 'Jeans & Bottoms (ខោ)', Icon: Scissors },
+  { id: 'Footprints', label: 'Footwear & Shoes (ស្បែកជើង)', Icon: Footprints },
+  { id: 'Layers', label: 'Jackets & Outerwear (អាវក្រៅ)', Icon: Layers },
 ];
 
 export function CategoryIcon({ icon, size = 18, color = 'var(--accent-emerald)' }) {
   const iconKey = (icon || '').toLowerCase();
 
+  // Tech & Phone Accessories
+  if (iconKey.includes('phone') || iconKey.includes('case') || iconKey.includes('smart') || iconKey.includes('mobile') || iconKey.includes('iphone') || iconKey.includes('📱')) {
+    return <Smartphone size={size} style={{ color: '#06b6d4' }} />;
+  }
+  if (iconKey.includes('shield') || iconKey.includes('glass') || iconKey.includes('screen') || iconKey.includes('armor') || iconKey.includes('protect') || iconKey.includes('🛡')) {
+    return <Shield size={size} style={{ color: '#10b981' }} />;
+  }
+  if (iconKey.includes('zap') || iconKey.includes('charg') || iconKey.includes('power') || iconKey.includes('battery') || iconKey.includes('⚡')) {
+    return <Zap size={size} style={{ color: '#f59e0b' }} />;
+  }
+  if (iconKey.includes('headphone') || iconKey.includes('audio') || iconKey.includes('ear') || iconKey.includes('sound') || iconKey.includes('music') || iconKey.includes('🎧')) {
+    return <Headphones size={size} style={{ color: '#8b5cf6' }} />;
+  }
+  if (iconKey.includes('cable') || iconKey.includes('wire') || iconKey.includes('usb') || iconKey.includes('plug') || iconKey.includes('cord') || iconKey.includes('🔌')) {
+    return <Cable size={size} style={{ color: '#6366f1' }} />;
+  }
+  if (iconKey.includes('laptop') || iconKey.includes('mac') || iconKey.includes('computer') || iconKey.includes('pc') || iconKey.includes('💻')) {
+    return <Laptop size={size} style={{ color: '#3b82f6' }} />;
+  }
+  if (iconKey.includes('tablet') || iconKey.includes('ipad')) {
+    return <Tablet size={size} style={{ color: '#6366f1' }} />;
+  }
+  if (iconKey.includes('speaker')) {
+    return <Speaker size={size} style={{ color: '#14b8a6' }} />;
+  }
+  if (iconKey.includes('camera') || iconKey.includes('lens') || iconKey.includes('photo') || iconKey.includes('📷')) {
+    return <Camera size={size} style={{ color: '#ec4899' }} />;
+  }
+  if (iconKey.includes('watch') || iconKey.includes('jewel') || iconKey.includes('time') || iconKey.includes('⌚')) {
+    return <Watch size={size} style={{ color: '#f59e0b' }} />;
+  }
+
+  // Retail & Fashion
   if (iconKey.includes('shirt') || iconKey.includes('tee') || iconKey.includes('polo') || iconKey.includes('cloth') || iconKey.includes('top') || iconKey.includes('👕') || iconKey.includes('👔') || iconKey.includes('👚') || iconKey.includes('🎽')) {
     return <Shirt size={size} style={{ color }} />;
   }
@@ -73,17 +129,11 @@ export function CategoryIcon({ icon, size = 18, color = 'var(--accent-emerald)' 
   if (iconKey.includes('pack') || iconKey.includes('box') || iconKey.includes('backpack') || iconKey.includes('🎒')) {
     return <Package size={size} style={{ color }} />;
   }
-  if (iconKey.includes('watch') || iconKey.includes('jewel') || iconKey.includes('time') || iconKey.includes('⌚')) {
-    return <Watch size={size} style={{ color }} />;
-  }
-  if (iconKey.includes('kid') || iconKey.includes('youth') || iconKey.includes('child') || iconKey.includes('🧒')) {
-    return <Tag size={size} style={{ color }} />;
+  if (iconKey.includes('crown')) {
+    return <Crown size={size} style={{ color }} />;
   }
   if (iconKey.includes('tag') || iconKey.includes('brand') || iconKey.includes('🏷')) {
     return <Tag size={size} style={{ color }} />;
-  }
-  if (iconKey.includes('crown')) {
-    return <Crown size={size} style={{ color }} />;
   }
   return <Folder size={size} style={{ color }} />;
 }
@@ -198,16 +248,21 @@ export default function CategoriesPage() {
   };
 
   const getFallbackIconName = (id, gender) => {
-    const key = (id || '').toUpperCase();
-    if (key.includes('SHOE')) return 'Footprints';
+    const key = ((id || '') + ' ' + (gender || '')).toUpperCase();
+    if (key.includes('PHONE') || key.includes('CASE') || key.includes('MAGSAFE')) return 'Smartphone';
+    if (key.includes('SCREEN') || key.includes('GLASS') || key.includes('ARMOR') || key.includes('SHIELD') || key.includes('PROTECT')) return 'Shield';
+    if (key.includes('CHARGE') || key.includes('CABLE') || key.includes('POWER') || key.includes('BATTERY') || key.includes('ZAP')) return 'Zap';
+    if (key.includes('AUDIO') || key.includes('HEADPHONE') || key.includes('EAR') || key.includes('AIRPOD')) return 'Headphones';
+    if (key.includes('SHOE') || key.includes('SNEAKER')) return 'Footprints';
     if (key.includes('JEAN') || key.includes('PANT') || key.includes('SHORT')) return 'Scissors';
-    if (key.includes('BAG')) return 'ShoppingBag';
+    if (key.includes('BAG') || key.includes('PURSE')) return 'ShoppingBag';
     if (key.includes('DRESS') || key.includes('NEW')) return 'Sparkles';
     if (key.includes('SALE')) return 'Flame';
     if (key.includes('JACKET')) return 'Layers';
     if (key.includes('WATCH')) return 'Watch';
     if (key.includes('PACK')) return 'Package';
-    return gender === 'women' ? 'Sparkles' : 'Shirt';
+    if (key.includes('LAPTOP') || key.includes('MAC')) return 'Laptop';
+    return 'Smartphone';
   };
 
   useEffect(() => {
@@ -231,8 +286,8 @@ export default function CategoriesPage() {
       id: '',
       nameEn: '',
       nameKm: '',
-      gender: selectedGender === 'all' ? 'men' : selectedGender,
-      icon: 'Shirt',
+      gender: selectedGender === 'all' ? 'Case Phone' : selectedGender,
+      icon: 'Smartphone',
       active: true,
     });
     setFormErrors({});
@@ -1542,19 +1597,20 @@ export default function CategoriesPage() {
                     }}
                   />
                   <datalist id="department-datalist-options">
-                    <option value="men">Men (បុរស)</option>
-                    <option value="women">Women (នារី)</option>
-                    <option value="kids">Kids (កុមារ)</option>
-                    <option value="all">All / Unisex (ទូទៅ/រួម)</option>
-                    <option value="accessories">Accessories & Jewelry (គ្រឿងតុបតែង)</option>
-                    <option value="sports">Sports & Athletics (កីឡា)</option>
-                    <option value="shoes">Shoes & Footwear (ស្បែកជើង)</option>
-                    <option value="bags">Bags & Backpacks (កាបូប)</option>
-                    <option value="beauty">Beauty & Fragrance (គ្រឿងសម្អាង)</option>
-                    <option value="TEN-ELEVEN">TEN-ELEVEN</option>
-                    <option value="GWYN">GWYN</option>
-                    <option value="GATONI">GATONI</option>
-                    <option value="361°">361°</option>
+                    <option value="Case Phone">Case Phone (ស្រោមទូរស័ព្ទ)</option>
+                    <option value="Screen Protector">Screen Protector (កញ្ចក់ការពារ)</option>
+                    <option value="Charger & Cable">Charger & Cable (ឆ្នាំងសាក & ខ្សែ)</option>
+                    <option value="Audio & Headphones">Audio & Headphones (កាស & សំឡេង)</option>
+                    <option value="Smartwatch">Smartwatch (នាឡិកាឆ្លាតវៃ)</option>
+                    <option value="Tech Gadgets">Tech Gadgets (គ្រឿងអេឡិចត្រូនិក)</option>
+                    <option value="Accessories">Accessories (គ្រឿងតុបតែងបន្ថែម)</option>
+                    <option value="General">General / All (ទូទៅ/រួម)</option>
+                    <option value="Men">Men (បុរស)</option>
+                    <option value="Women">Women (នារី)</option>
+                    <option value="Kids">Kids (កុមារ)</option>
+                    <option value="Sports">Sports (កីឡា)</option>
+                    <option value="Shoes">Shoes (ស្បែកជើង)</option>
+                    <option value="Bags">Bags (កាបូប)</option>
                     {customDepartments.map((dept) => (
                       <option key={dept} value={dept} />
                     ))}
@@ -1564,30 +1620,36 @@ export default function CategoriesPage() {
                 {/* Quick Selection Pills */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
                   {[
-                    { id: 'men', label: 'Men (បុរស)' },
-                    { id: 'women', label: 'Women (នារី)' },
-                    { id: 'kids', label: 'Kids (កុមារ)' },
-                    { id: 'all', label: 'Unisex (រួម)' },
-                    { id: 'accessories', label: 'Accessories' },
-                    { id: 'sports', label: 'Sports' },
-                    { id: 'shoes', label: 'Shoes' },
-                    { id: 'bags', label: 'Bags' },
-                    { id: 'brand', label: 'Brand' },
+                    { id: 'Case Phone', label: '📱 Case Phone (ស្រោមទូរស័ព្ទ)', defaultIcon: 'Smartphone' },
+                    { id: 'Screen Protector', label: '🛡️ Screen Protector (កញ្ចក់)', defaultIcon: 'Shield' },
+                    { id: 'Charger & Cable', label: '⚡ Charger & Cable (ឆ្នាំងសាក)', defaultIcon: 'Zap' },
+                    { id: 'Audio', label: '🎧 Audio (កាស)', defaultIcon: 'Headphones' },
+                    { id: 'Accessories', label: '✨ Accessories (គ្រឿងបន្ថែម)', defaultIcon: 'Sparkles' },
+                    { id: 'General', label: '🌐 General (ទូទៅ)', defaultIcon: 'Folder' },
+                    { id: 'Men', label: 'Men (បុរស)', defaultIcon: 'Shirt' },
+                    { id: 'Women', label: 'Women (នារី)', defaultIcon: 'Sparkles' },
+                    { id: 'Kids', label: 'Kids (កុមារ)', defaultIcon: 'Tag' },
                   ].map((preset) => {
                     const isSelected = (categoryForm.gender || '').toLowerCase() === preset.id.toLowerCase();
                     return (
                       <button
                         type="button"
                         key={preset.id}
-                        onClick={() => setCategoryForm({ ...categoryForm, gender: preset.id })}
+                        onClick={() => {
+                          setCategoryForm((prev) => ({
+                            ...prev,
+                            gender: preset.id,
+                            icon: preset.defaultIcon || prev.icon,
+                          }));
+                        }}
                         style={{
                           background: isSelected ? 'var(--accent-emerald)' : 'rgba(255, 255, 255, 0.05)',
                           color: isSelected ? '#fff' : 'var(--text-secondary)',
                           border: '1px solid',
                           borderColor: isSelected ? 'var(--accent-emerald)' : 'var(--border-subtle)',
                           borderRadius: 'var(--radius-sm)',
-                          padding: '4px 10px',
-                          fontSize: '11px',
+                          padding: '5px 10px',
+                          fontSize: '11.5px',
                           fontWeight: isSelected ? 600 : 400,
                           cursor: 'pointer',
                           transition: 'all 0.15s ease',
