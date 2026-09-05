@@ -1,5 +1,3 @@
-# Sorted A-Z
-
 # A
 .agents/
 
@@ -10,6 +8,7 @@ build/
 */build/
 
 # D
+dev.sh
 dist/
 */dist/
 .DS_Store
