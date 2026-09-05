@@ -400,34 +400,32 @@ export const adminStore = {
   getCategories: () => {
     try {
       const prods = adminStore.getProducts();
-      let list = DEFAULT_CATEGORIES;
+      let list;
       const stored = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          list = parsed;
+      if (stored !== null) {
+        try {
+          const parsed = JSON.parse(stored);
+          list = Array.isArray(parsed) ? parsed : [...DEFAULT_CATEGORIES];
+        } catch (_) {
+          list = [...DEFAULT_CATEGORIES];
         }
-      }
-
-      // Auto-merge new defaults if needed
-      const existingIds = new Set(list.map((c) => (c.id || '').toUpperCase()));
-      for (const defCat of DEFAULT_CATEGORIES) {
-        if (!existingIds.has(defCat.id.toUpperCase())) {
-          list.push(defCat);
-        }
+      } else {
+        list = [...DEFAULT_CATEGORIES];
+        localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(list));
       }
 
       // Dynamically calculate accurate counts based on current real products
       return list.map((cat) => {
         let cnt = 0;
-        if (cat.id === 'ALL') {
+        const catKey = (cat.id || '').toUpperCase();
+        if (catKey === 'ALL') {
           cnt = prods.length;
-        } else if (cat.id === 'NEW_IN') {
+        } else if (catKey === 'NEW_IN') {
           cnt = prods.filter(p => (p.badge && p.badge.toUpperCase().includes('NEW')) || p.isNewArrival).length;
-        } else if (cat.id === 'SALE') {
+        } else if (catKey === 'SALE') {
           cnt = prods.filter(p => (p.discountPercent && p.discountPercent > 0) || (p.badge && p.badge.includes('%'))).length;
         } else {
-          cnt = prods.filter(p => (p.category || '').toUpperCase() === cat.id.toUpperCase() || (p.subCategory || '').toUpperCase() === cat.id.toUpperCase()).length;
+          cnt = prods.filter(p => (p.category || '').toUpperCase() === catKey || (p.subCategory || '').toUpperCase() === catKey).length;
         }
         return { ...cat, count: cnt };
       });
@@ -469,7 +467,8 @@ export const adminStore = {
 
   deleteCategory: (id) => {
     const categories = adminStore.getCategories();
-    const updated = categories.filter((c) => c.id !== id);
+    const cleanId = String(id).trim().toLowerCase();
+    const updated = categories.filter((c) => String(c.id).trim().toLowerCase() !== cleanId);
     adminStore.saveCategories(updated);
     return true;
   },
