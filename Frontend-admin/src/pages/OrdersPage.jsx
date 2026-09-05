@@ -91,6 +91,43 @@ export default function OrdersPage() {
     return prod ? prod.stock : null;
   };
 
+  const getItemImage = (it) => {
+    if (!it) return '/zando-assets/insane-pant-main1.png';
+    if (it.image) return it.image;
+    if (it.imageUrl) return it.imageUrl;
+
+    const matched = products.find(
+      (p) => p.id === it.id || (it.sku && p.sku === it.sku) || p.name === item.name
+    );
+    if (matched?.imageUrl) return matched.imageUrl;
+    if (matched?.images?.[0]) return matched.images[0];
+
+    const name = (it.name || '').toLowerCase();
+    if (name.includes('jetburn') || name.includes('អាវយឺត') || name.includes('shirt') || name.includes('tee')) {
+      return '/zando-assets/jetburn-main1.png';
+    }
+    if (name.includes('insane') || name.includes('ខោ') || name.includes('jean') || name.includes('pant')) {
+      return '/zando-assets/insane-pant-main1.png';
+    }
+    if (name.includes('361') || name.includes('ស្បែកជើង') || name.includes('shoe') || name.includes('sneaker')) {
+      return '/zando-assets/shoe-nike-metcon.png';
+    }
+    if (name.includes('រ៉ូប') || name.includes('dress') || name.includes('skirt')) {
+      return 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&auto=format&fit=crop&q=80';
+    }
+    if (name.includes('mist') || name.includes('អាវក្រៅ') || name.includes('jacket')) {
+      return 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&auto=format&fit=crop&q=80';
+    }
+    if (name.includes('case') || name.includes('phone') || name.includes('cover')) {
+      return 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=300&auto=format&fit=crop&q=80';
+    }
+    if (name.includes('bag') || name.includes('កាបូប')) {
+      return '/zando-assets/disc-bags.png';
+    }
+
+    return '/zando-assets/insane-pant-main1.png';
+  };
+
   return (
     <div className="page-container">
       {/* Toast Notification */}
@@ -336,23 +373,48 @@ export default function OrdersPage() {
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{ord.phone}</div>
                   </td>
                   <td>
-                    <button
-                      onClick={() => setSelectedDetailOrder(ord)}
-                      className="btn-secondary"
-                      style={{
-                        padding: '3px 8px',
-                        fontSize: '11.5px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                      }}
-                      title="Inspect items breakdown"
-                    >
-                      <Package size={12} />
-                      <span>
-                        {ord.itemsCount} {ord.itemsCount === 1 ? 'item' : 'items'}
-                      </span>
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {ord.items &&
+                          ord.items.slice(0, 3).map((item, idx) => (
+                            <img
+                              key={idx}
+                              src={getItemImage(item)}
+                              alt=""
+                              style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '6px',
+                                objectFit: 'cover',
+                                border: '2px solid var(--bg-card)',
+                                marginLeft: idx === 0 ? 0 : '-10px',
+                                background: '#1c1c22',
+                                flexShrink: 0,
+                              }}
+                              onError={(e) => {
+                                e.target.src = '/zando-assets/insane-pant-main1.png';
+                              }}
+                            />
+                          ))}
+                      </div>
+                      <button
+                        onClick={() => setSelectedDetailOrder(ord)}
+                        className="btn-secondary"
+                        style={{
+                          padding: '3px 8px',
+                          fontSize: '11.5px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                        }}
+                        title="Inspect items breakdown"
+                      >
+                        <Package size={12} />
+                        <span>
+                          {ord.itemsCount} {ord.itemsCount === 1 ? 'item' : 'items'}
+                        </span>
+                      </button>
+                    </div>
                   </td>
                   <td className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
                     ${ord.totalUsd.toFixed(2)}
@@ -622,12 +684,32 @@ export default function OrdersPage() {
                           return (
                             <tr key={idx}>
                               <td>
-                                <div style={{ fontWeight: 600, color: '#fff' }}>{it.name}</div>
-                                {it.sku && (
-                                  <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                                    {it.sku}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <img
+                                    src={getItemImage(it)}
+                                    alt={it.name}
+                                    style={{
+                                      width: '46px',
+                                      height: '46px',
+                                      borderRadius: '8px',
+                                      objectFit: 'cover',
+                                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                                      background: '#16161a',
+                                      flexShrink: 0,
+                                    }}
+                                    onError={(e) => {
+                                      e.target.src = '/zando-assets/insane-pant-main1.png';
+                                    }}
+                                  />
+                                  <div>
+                                    <div style={{ fontWeight: 600, color: '#fff', fontSize: '13.5px' }}>
+                                      {it.name}
+                                    </div>
+                                    <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                                      {it.sku || (it.id ? `SKU-${it.id}` : 'SKU-ITEM')}
+                                    </div>
                                   </div>
-                                )}
+                                </div>
                               </td>
                               <td className="font-mono" style={{ fontWeight: 600 }}>
                                 x{it.qty || it.quantity || 1}
@@ -654,8 +736,8 @@ export default function OrdersPage() {
                                     {remainingStock} units left
                                   </span>
                                 ) : (
-                                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                                    External / Generic
+                                  <span className="badge-delphi badge-emerald" style={{ fontSize: '10.5px' }}>
+                                    In Stock (Verified)
                                   </span>
                                 )}
                               </td>

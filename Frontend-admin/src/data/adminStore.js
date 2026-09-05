@@ -180,8 +180,8 @@ const DEFAULT_ORDERS = [
     source: 'Storefront',
     date: '2026-03-04 15:30',
     items: [
-      { name: 'ខោខូវប៊យជើងវែង INSANE®', qty: 1, price: 38.95 },
-      { name: 'អាវយឺត JETBURN WASH ROCKET', qty: 1, price: 17.95 }
+      { name: 'ខោខូវប៊យជើងវែង INSANE®', qty: 1, price: 38.95, sku: 'INS-ROYAL-100', image: '/zando-assets/insane-pant-main1.png', imageUrl: '/zando-assets/insane-pant-main1.png' },
+      { name: 'អាវយឺត JETBURN WASH ROCKET', qty: 1, price: 17.95, sku: 'ZAN-JETBURN-01', image: '/zando-assets/jetburn-main1.png', imageUrl: '/zando-assets/jetburn-main1.png' }
     ]
   },
   {
@@ -198,7 +198,7 @@ const DEFAULT_ORDERS = [
     source: 'Walk-in POS',
     date: '2026-03-04 14:15',
     items: [
-      { name: 'ស្បែកជើងកីឡា 361° One Degree', qty: 1, price: 65.00 }
+      { name: 'ស្បែកជើងកីឡា 361° One Degree', qty: 1, price: 65.00, sku: '361-DEGREE-01', image: '/zando-assets/shoe-nike-metcon.png', imageUrl: '/zando-assets/shoe-nike-metcon.png' }
     ]
   },
   {
@@ -215,7 +215,7 @@ const DEFAULT_ORDERS = [
     source: 'Storefront',
     date: '2026-03-04 11:05',
     items: [
-      { name: 'រ៉ូបផ្កាវែង Floral Summer Dress', qty: 1, price: 32.50 }
+      { name: 'រ៉ូបផ្កាវែង Floral Summer Dress', qty: 1, price: 32.50, sku: 'DRS-FLORAL-01', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&auto=format&fit=crop&q=80', imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&auto=format&fit=crop&q=80' }
     ]
   },
   {
@@ -232,7 +232,7 @@ const DEFAULT_ORDERS = [
     source: 'Storefront',
     date: '2026-03-04 09:40',
     items: [
-      { name: 'អាវក្រៅ Through The Mist', qty: 1, price: 49.00 }
+      { name: 'អាវក្រៅ Through The Mist', qty: 1, price: 49.00, sku: 'JKT-MIST-01', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&auto=format&fit=crop&q=80', imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&auto=format&fit=crop&q=80' }
     ]
   }
 ];
@@ -480,11 +480,44 @@ export const adminStore = {
   getOrders: () => {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.ORDERS);
+      let list;
       if (!stored) {
         localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(DEFAULT_ORDERS));
         return DEFAULT_ORDERS;
       }
-      return JSON.parse(stored);
+      list = JSON.parse(stored);
+      if (!Array.isArray(list)) return DEFAULT_ORDERS;
+
+      // Ensure every order item has image/imageUrl
+      return list.map((order) => {
+        if (Array.isArray(order.items)) {
+          const itemsWithImages = order.items.map((it) => {
+            if (it.image || it.imageUrl) return it;
+            const name = (it.name || '').toLowerCase();
+            let img = '/zando-assets/insane-pant-main1.png';
+            let sku = it.sku || 'SKU-ITEM';
+            if (name.includes('jetburn') || name.includes('អាវយឺត') || name.includes('shirt') || name.includes('tee')) {
+              img = '/zando-assets/jetburn-main1.png';
+              sku = it.sku || 'ZAN-JETBURN-01';
+            } else if (name.includes('insane') || name.includes('ខោ') || name.includes('jean')) {
+              img = '/zando-assets/insane-pant-main1.png';
+              sku = it.sku || 'INS-ROYAL-100';
+            } else if (name.includes('361') || name.includes('ស្បែកជើង') || name.includes('shoe')) {
+              img = '/zando-assets/shoe-nike-metcon.png';
+              sku = it.sku || '361-DEGREE-01';
+            } else if (name.includes('រ៉ូប') || name.includes('dress')) {
+              img = 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&auto=format&fit=crop&q=80';
+              sku = it.sku || 'DRS-FLORAL-01';
+            } else if (name.includes('mist') || name.includes('អាវក្រៅ') || name.includes('jacket')) {
+              img = 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&auto=format&fit=crop&q=80';
+              sku = it.sku || 'JKT-MIST-01';
+            }
+            return { ...it, image: img, imageUrl: img, sku };
+          });
+          return { ...order, items: itemsWithImages };
+        }
+        return order;
+      });
     } catch {
       return DEFAULT_ORDERS;
     }
