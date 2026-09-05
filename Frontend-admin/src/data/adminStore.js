@@ -176,6 +176,7 @@ const DEFAULT_ORDERS = [
     totalKhr: 233290,
     paymentMethod: 'Bakong KHQR',
     status: 'Paid',
+    stockDeducted: true,
     source: 'Storefront',
     date: '2026-03-04 15:30',
     items: [
@@ -193,6 +194,7 @@ const DEFAULT_ORDERS = [
     totalKhr: 266500,
     paymentMethod: 'Cash',
     status: 'Completed',
+    stockDeducted: true,
     source: 'Walk-in POS',
     date: '2026-03-04 14:15',
     items: [
@@ -209,6 +211,7 @@ const DEFAULT_ORDERS = [
     totalKhr: 133250,
     paymentMethod: 'Bakong KHQR',
     status: 'Paid',
+    stockDeducted: true,
     source: 'Storefront',
     date: '2026-03-04 11:05',
     items: [
@@ -225,6 +228,7 @@ const DEFAULT_ORDERS = [
     totalKhr: 200900,
     paymentMethod: 'Bakong KHQR',
     status: 'Pending',
+    stockDeducted: false,
     source: 'Storefront',
     date: '2026-03-04 09:40',
     items: [
@@ -493,9 +497,124 @@ export const adminStore = {
 
   updateOrderStatus: (orderId, newStatus) => {
     const orders = adminStore.getOrders();
-    const updated = orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o));
+    const targetOrder = orders.find((o) => o.id === orderId);
+    if (!targetOrder) return { orders, targetOrder: null };
+
+    let stockDeducted = Boolean(targetOrder.stockDeducted);
+    let products = adminStore.getProducts();
+    let stockChanged = false;
+    const historyRecords = [];
+    let message = '';
+
+    // Auto-cut warehouse stock when order is Completed (or Paid from a pending state)
+    if ((newStatus === 'Completed' || newStatus === 'Paid') && !stockDeducted) {
+      if (Array.isArray(targetOrder.items) && targetOrder.items.length > 0) {
+        targetOrder.items.forEach((item) => {
+          const qty = Number(item.qty || item.quantity || 1);
+          const matched = products.find(
+            (p) => p.id === item.id || (item.sku && p.sku === item.sku) || p.name === item.name
+          );
+
+          if (matched) {
+            const prevStock = Number(matched.stock || 0);
+            const newStock = Math.max(0, prevStock - qty);
+            products = products.map((p) => (p.id === matched.id ? { ...p, stock: newStock } : p));
+            stockChanged = true;
+            historyRecords.push({
+              id: `MOV-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+              productId: matched.id,
+              productName: matched.name,
+              sku: matched.sku || `SKU-${matched.id}`,
+              delta: -qty,
+              previousStock: prevStock,
+              newStock,
+              reason: `POS_SALE (Invoice #${targetOrder.id})`,
+              date: new Date().toLocaleString(),
+              user: 'Admin Manager',
+              invoiceId: targetOrder.id,
+            });
+          } else {
+            // Uncatalogued product still records movement in history
+            historyRecords.push({
+              id: `MOV-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+              productId: item.id || 'EXT',
+              productName: item.name || 'Sold Item',
+              sku: item.sku || 'SKU-ITEM',
+              delta: -qty,
+              previousStock: 0,
+              newStock: 0,
+              reason: `POS_SALE (Invoice #${targetOrder.id})`,
+              date: new Date().toLocaleString(),
+              user: 'Admin Manager',
+              invoiceId: targetOrder.id,
+            });
+          }
+        });
+      }
+      stockDeducted = true;
+      message = `Invoice #${targetOrder.id} កាត់ស្តុកចេញពីឃ្លាំងដោយស្វ័យប្រវត្តិ (Stock Auto-Deducted)`;
+    }
+    // Auto-restock if order is Refunded (or reverted back to Pending)
+    else if ((newStatus === 'Refunded' || newStatus === 'Pending') && stockDeducted) {
+      if (Array.isArray(targetOrder.items) && targetOrder.items.length > 0) {
+        targetOrder.items.forEach((item) => {
+          const qty = Number(item.qty || item.quantity || 1);
+          const matched = products.find(
+            (p) => p.id === item.id || (item.sku && p.sku === item.sku) || p.name === item.name
+          );
+
+          if (matched) {
+            const prevStock = Number(matched.stock || 0);
+            const newStock = prevStock + qty;
+            products = products.map((p) => (p.id === matched.id ? { ...p, stock: newStock } : p));
+            stockChanged = true;
+            historyRecords.push({
+              id: `MOV-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+              productId: matched.id,
+              productName: matched.name,
+              sku: matched.sku || `SKU-${matched.id}`,
+              delta: +qty,
+              previousStock: prevStock,
+              newStock,
+              reason: newStatus === 'Refunded' 
+                ? `ORDER_REFUND (Invoice #${targetOrder.id})`
+                : `ORDER_CANCEL_RESTOCK (Invoice #${targetOrder.id})`,
+              date: new Date().toLocaleString(),
+              user: 'Admin Manager',
+              invoiceId: targetOrder.id,
+            });
+          }
+        });
+      }
+      stockDeducted = false;
+      message = `Invoice #${targetOrder.id} បានបូកស្តុកចូលឃ្លាំងវិញ (Restocked to Warehouse)`;
+    }
+
+    if (stockChanged) {
+      adminStore.saveProducts(products);
+    }
+
+    if (historyRecords.length > 0) {
+      try {
+        const existingHistory = JSON.parse(localStorage.getItem('zando_stock_history_v1') || '[]');
+        const updatedHistory = [...historyRecords, ...existingHistory].slice(0, 100);
+        localStorage.setItem('zando_stock_history_v1', JSON.stringify(updatedHistory));
+        notifyChange('SAVE_STOCK_HISTORY', 'zando_stock_history_v1', updatedHistory);
+      } catch (_) {}
+    }
+
+    const updated = orders.map((o) =>
+      o.id === orderId ? { ...o, status: newStatus, stockDeducted } : o
+    );
     adminStore.saveOrders(updated);
-    return updated;
+    return {
+      orders: updated,
+      targetOrder: updated.find((o) => o.id === orderId),
+      stockChanged,
+      stockDeducted,
+      historyRecords,
+      message,
+    };
   },
 
   // ── Customer CRM Methods ────────────────────────────────────────────────────

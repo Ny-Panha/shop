@@ -102,20 +102,41 @@ window.addEventListener('message', (event) => {
         const updatedOrders = [order, ...orders.filter(o => o.id !== order.id)];
         setStoreData(STORAGE_KEYS.ORDERS, updatedOrders);
 
-        // Deduct product stock if items provided
+        // Deduct product stock if items provided and log movement
         if (Array.isArray(order.items)) {
           const products = getStoreData(STORAGE_KEYS.PRODUCTS, []);
+          const history = getStoreData('zando_stock_history_v1', []);
           let changed = false;
+          const newMovements = [];
           const updatedProducts = products.map(p => {
             const item = order.items.find(i => i.id === p.id || i.name === p.name || i.name === p.nameEn);
             if (item) {
               changed = true;
-              return { ...p, stock: Math.max(0, (p.stock || 0) - (item.qty || item.quantity || 1)) };
+              const qty = Number(item.qty || item.quantity || 1);
+              const prev = Number(p.stock || 0);
+              const nStock = Math.max(0, prev - qty);
+              newMovements.push({
+                id: 'MOV-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                productId: p.id,
+                productName: p.name,
+                sku: p.sku || ('SKU-' + p.id),
+                delta: -qty,
+                previousStock: prev,
+                newStock: nStock,
+                reason: 'CUSTOMER_ORDER (Invoice #' + order.id + ')',
+                date: new Date().toLocaleString(),
+                user: 'Customer (Storefront)',
+                invoiceId: order.id,
+              });
+              return { ...p, stock: nStock };
             }
             return p;
           });
           if (changed) {
             setStoreData(STORAGE_KEYS.PRODUCTS, updatedProducts);
+            if (newMovements.length > 0) {
+              setStoreData('zando_stock_history_v1', [...newMovements, ...history].slice(0, 100));
+            }
           }
         }
       }
