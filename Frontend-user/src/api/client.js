@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://shop-backend-wbhd.onrender.com/api';
 
 export function getAuthToken() {
   return localStorage.getItem('casehaven_token');
